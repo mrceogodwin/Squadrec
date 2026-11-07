@@ -73,3 +73,7 @@ html{scroll-padding-top:90px}body{background:var(--app-bg)}button{transition:tra
 .exclusive-offer-form label:nth-child(3),.exclusive-offer-form button{grid-column:1/-1}
 .exclusive-offer-form button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:620px){.exclusive-track-card{grid-template-columns:65px minmax(0,1fr);gap:12px}.exclusive-track-art{width:65px;height:65px}.exclusive-track-info>b{font-size:13px}.exclusive-track-info>p{font-size:10px}.exclusive-offer-button{grid-column:1/-1;width:100%}.exclusive-offer-form{grid-template-columns:1fr}.exclusive-offer-form label,.exclusive-offer-form label:nth-child(3),.exclusive-offer-form button{grid-column:1}}
+
+/* SQUADREC brand mark */
+.sq-logo-image{width:46px;height:46px;object-fit:contain;display:block;flex:none}.sq-hero-stamp{width:clamp(180px,22vw,300px);height:auto;object-fit:contain;opacity:.12;filter:grayscale(1);right:8%;top:12%;}
+@media(max-width:600px){.sq-logo-image{width:39px;height:39px}.sq-logo b{font-size:20px}}
