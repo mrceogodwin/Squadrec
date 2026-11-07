@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
 const MIME: Record<string, { types: string[]; extensions: string[] }> = {
   audio: { types: ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/mp4", "audio/aac", "audio/flac", "audio/ogg", "audio/webm"], extensions: ["mp3", "wav", "m4a", "aac", "flac", "ogg", "webm"] },
+  preview: { types: ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/mp4", "audio/aac", "audio/flac", "audio/ogg", "audio/webm"], extensions: ["mp3", "wav", "m4a", "aac", "flac", "ogg", "webm"] },
   artwork: { types: ["image/jpeg", "image/png", "image/webp"], extensions: ["jpg", "jpeg", "png", "webp"] },
   rights: { types: ["application/pdf", "image/jpeg", "image/png"], extensions: ["pdf", "jpg", "jpeg", "png"] },
 };
@@ -23,9 +24,10 @@ export async function POST(request: Request, { params }: { params: { id: string 
   if (track.status !== "DRAFT" && track.status !== "REJECTED") return NextResponse.json({ error: "This submission is locked for editing." }, { status: 409 });
 
   const form = await request.formData();
-  const uploads = (["audio", "artwork", "rights"] as const).map(kind => ({ kind, file: form.get(kind) })).filter((item): item is { kind: "audio" | "artwork" | "rights"; file: File } => item.file instanceof File && item.file.size > 0);
+  const uploads = (["audio", "preview", "artwork", "rights"] as const).map(kind => ({ kind, file: form.get(kind) })).filter((item): item is { kind: "audio" | "preview" | "artwork" | "rights"; file: File } => item.file instanceof File && item.file.size > 0);
   if (uploads.length !== 1) return NextResponse.json({ error: "Upload one file per request." }, { status: 400 });
 
+  if (uploads.some(x => x.kind === "preview") && track.type !== "EXCLUSIVE") return NextResponse.json({ error: "Preview audio is only for exclusive tracks." }, { status: 400 });
   const results: Record<string, string> = {};
   for (const { kind, file } of uploads) {
     const rule = MIME[kind];
@@ -46,6 +48,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       where: { id: track.id },
       data: {
         ...(results.audio ? { audioObjectKey: results.audio } : {}),
+        ...(results.preview ? { previewObjectKey: results.preview } : {}),
         ...(results.artwork ? { artworkUrl: results.artwork } : {}),
       },
     });
