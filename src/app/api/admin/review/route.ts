@@ -65,11 +65,11 @@ export async function POST(request: Request) {
     ]);
     return NextResponse.json({ success: true });
   }
-  const track = await prisma.track.findUnique({ where: { id }, select: { id: true, status: true, uploaderId: true, title: true, audioObjectKey: true, artworkUrl: true } });
+  const track = await prisma.track.findUnique({ where: { id }, select: { id: true, status: true, type: true, uploaderId: true, title: true, audioObjectKey: true, previewObjectKey: true, artworkUrl: true } });
   if (!track || track.status !== "PENDING_REVIEW") return NextResponse.json({ error: "This track is no longer pending review." }, { status: 409 });
   if (decision === "approve") {
     const rights = await prisma.auditLog.findFirst({ where: { entityType: "Track", entityId: id, action: "TRACK_RIGHTS_EVIDENCE_UPLOADED" } });
-    if (!track.audioObjectKey || !track.artworkUrl || !rights) return NextResponse.json({ error: "Required audio, artwork or rights evidence is missing." }, { status: 400 });
+    if (!track.audioObjectKey || !track.artworkUrl || !rights || (track.type === "EXCLUSIVE" && !track.previewObjectKey)) return NextResponse.json({ error: "Required audio, artwork, rights evidence or exclusive preview is missing." }, { status: 400 });
   }
   await prisma.$transaction([
     prisma.track.update({ where: { id }, data: { status: decision === "approve" ? "APPROVED" : "REJECTED", ...(decision === "approve" ? { rightsVerifiedAt: new Date() } : {}) } }),
