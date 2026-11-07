@@ -46,16 +46,34 @@ export async function POST(request: Request) {
   if (contract.status === "COMPLETED" && contract.completedAt) return NextResponse.json({ received: true, alreadyProcessed: true });
   if (contract.status !== "PAYMENT_PENDING" || !contract.signedAt) return NextResponse.json({ error: "Contract is not signed and awaiting payment." }, { status: 409 });
 
-  await prisma.$transaction([
-    prisma.contract.update({ where: { id: contract.id }, data: { status: "COMPLETED", completedAt: new Date() } }),
-    prisma.auditLog.create({
+  const completion = await prisma.$transaction(async (tx) => {
+    const updated = await tx.contract.updateMany({
+      where: { id: contract.id, status: "PAYMENT_PENDING", signedAt: { not: null } },
+      data: { status: "COMPLETED", completedAt: new Date() },
+    });
+    if (updated.count === 0) {
+      const current = await tx.contract.findUnique({ where: { id: contract.id }, select: { status: true } });
+      return { alreadyProcessed: current?.status === "COMPLETED" };
+    }
+    await tx.auditLog.create({
       data: {
         action: "PAYMENT_VERIFIED_CONTRACT_COMPLETED",
         entityType: "Contract",
         entityId: contract.id,
-        metadata: { reference, amount: verification.data.amount, currency: verification.data.currency, ownershipTransferRecorded: contract.contractType === "OWNERSHIP_TRANSFER" },
+        metadata: {
+          reference,
+          amount: verification.data.amount,
+          currency: verification.data.currency,
+          ownershipTransferRecorded: false,
+          rightsRegisterUpdateRequired: contract.contractType === "OWNERSHIP_TRANSFER",
+        },
       },
-    }),
-  ]);
-  return NextResponse.json({ received: true });
+    });
+    return { alreadyProcessed: false };
+  });
+  if (!completion.alreadyProcessed) {
+    const duplicate = await prisma.contract.findUnique({ where: { id: contract.id }, select: { status: true } });
+    if (duplicate?.status !== "COMPLETED") return NextResponse.json({ error: "Contract changed before payment could be recorded." }, { status: 409 });
+  }
+  return NextResponse.json({ received: true, alreadyProcessed: completion.alreadyProcessed });
 }
