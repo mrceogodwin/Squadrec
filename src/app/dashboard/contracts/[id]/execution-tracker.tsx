@@ -1,0 +1,12 @@
+"use client";
+import { useEffect,useState } from "react";
+import { CheckCircle2, Circle, ShieldCheck, RefreshCw } from "lucide-react";
+
+type Execution={contract:{id:string;status:string;contractType:string;signedAt:string|null;completedAt:string|null};milestones:{draftPrepared:boolean;sentForReview:boolean;buyerAcceptedTerms:boolean;signatureProviderConfigured:boolean;signaturesComplete:boolean;paymentVerified:boolean;ownershipTransferComplete:boolean};notice:string};
+export default function ContractExecution({contractId}:{contractId:string}){
+ const [data,setData]=useState<Execution|null>(null);const [error,setError]=useState("");const [loading,setLoading]=useState(true);
+ async function load(){setLoading(true);try{const r=await fetch("/api/contracts/"+contractId+"/execution");const d=await r.json();if(!r.ok)throw new Error(d.error||"Unable to load execution status.");setData(d);setError("");}catch(e){setError(e instanceof Error?e.message:"Unable to load execution status.");}finally{setLoading(false);}}
+ useEffect(()=>{load();},[contractId]);
+ const steps=[["Draft prepared",data?.milestones.draftPrepared],["Sent for counterparty review",data?.milestones.sentForReview],["Buyer accepted terms",data?.milestones.buyerAcceptedTerms],["Electronic signature provider configured",data?.milestones.signatureProviderConfigured],["All required signatures complete",data?.milestones.signaturesComplete],["Payment verified",data?.milestones.paymentVerified],["Ownership transfer recorded",data?.milestones.ownershipTransferComplete]];
+ return <section className="sq-execution-panel"><div className="sq-execution-head"><div><span className="eyebrow">EXECUTION TRACKER</span><h2>Completion checklist</h2><p>Milestones are only checked when supported by recorded system state.</p></div><button className="sq-refresh" onClick={load} disabled={loading}><RefreshCw size={14}/> Refresh</button></div>{loading?<p className="sq-execution-muted">Loading execution status…</p>:error?<p className="sq-execution-error">{error}</p>:<><div className="sq-execution-steps">{steps.map(([label,done])=><div className="sq-execution-step" key={String(label)}>{done?<CheckCircle2 size={17}/>:<Circle size={17}/>}<span>{label}</span><b>{done?"Complete":"Pending"}</b></div>)}</div><div className="sq-execution-warning"><ShieldCheck size={17}/><span>{data?.notice} Electronic signatures and payment verification are not yet connected. Do not treat this checklist as proof of execution or transfer.</span></div></>}</section>;
+}
