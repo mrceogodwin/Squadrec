@@ -22,7 +22,8 @@
     "bcryptjs": "^3.0.2",
     "next-auth": "^5.0.0-beta.30",
     "zod": "^4.1.12",
-    "@vercel/blob": "^2.5.0"
+    "@vercel/blob": "^2.5.0",
+    "music-metadata": "10.6.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
