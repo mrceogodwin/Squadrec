@@ -162,6 +162,7 @@ model Track {
   priceMinor        Int?
   artworkUrl        String?
   audioObjectKey    String?
+  previewObjectKey  String?
   releaseDate       DateTime?
   rightsVerifiedAt  DateTime?
   publicPreview     Boolean     @default(true)
