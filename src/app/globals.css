@@ -98,3 +98,46 @@ html{scroll-padding-top:90px}body{background:var(--app-bg)}button{transition:tra
 
 /* Contracts and negotiation screens — homepage light palette */
 .sq-contract-card{border:1px solid #e5ece6;border-radius:15px;padding:18px;background:#fff;margin:13px 0}.sq-contract-top{display:flex;align-items:center;gap:12px}.sq-contract-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#eaf8ed;color:#078b35;flex:none}.sq-contract-top>div:nth-child(2){flex:1;min-width:0;display:grid;gap:5px}.sq-contract-top b{font-size:14px;color:#172019}.sq-contract-top span{font-size:10px;color:#718076}.sq-contract-status{background:#eff9f1;border:1px solid #dcefe0;color:#087b32!important;border-radius:22px;padding:6px 9px;font-size:9px!important;font-weight:800;white-space:nowrap}.sq-contract-meta{display:flex;flex-wrap:wrap;gap:9px 18px;padding:13px 0;color:#68756b;font-size:10px}.sq-contract-terms{border-top:1px solid #edf1ed;padding-top:10px;color:#3b473e;font-size:11px}.sq-contract-terms summary{cursor:pointer;color:#087b32;font-weight:750}.sq-contract-terms p{white-space:pre-wrap;line-height:1.7;color:#59665c}.sq-contract-id{display:block;color:#929c94;font-size:9px;margin-top:12px}.sq-contract-label,.sq-offer-response label{display:grid;gap:7px;margin:12px 0;color:#3b463e;font-size:11px;font-weight:700}.sq-contract-label textarea,.sq-contract-label select,.sq-offer-response input,.sq-offer-response textarea{width:100%;padding:11px 12px;border:1px solid #dce5dd;border-radius:10px;background:#fff;color:#182019;font:inherit;font-size:11px}.sq-contract-label textarea:focus,.sq-contract-label select:focus,.sq-offer-response input:focus,.sq-offer-response textarea:focus{outline:2px solid #b9e5c3;border-color:#078b35}.sq-offer-response{margin-top:14px;padding-top:12px;border-top:1px solid #edf1ed}.sq-offer-response .sq-review-actions{flex-wrap:wrap}.sq-review-foot a{color:#078b35;font-weight:800;text-decoration:underline}
+
+/* SQUADREC LIGHT APP THEME — auth screens, matching the approved light homepage UI */
+.auth-screen{background:radial-gradient(ellipse at 50% 0%,rgba(8,139,53,.09),transparent 42%),#f7faf7!important;color:#172019!important}
+.auth-glow{border-color:rgba(8,139,53,.12)!important;box-shadow:0 0 0 45px rgba(8,139,53,.025),0 0 0 90px rgba(8,139,53,.015)!important}
+.auth-brand{color:#172019!important}.auth-brand small{color:#718076!important}
+.auth-card{background:#fff!important;border:1px solid #e1e9e2!important;box-shadow:0 24px 70px rgba(25,55,32,.09),0 2px 8px rgba(25,55,32,.035)!important;border-radius:22px!important;color:#172019!important}
+.auth-icon{background:#edf8ef!important;border-color:#cce8d1!important;color:#078b35!important}
+.auth-card>.eyebrow{color:#078b35!important}
+.auth-card h1{color:#172019!important}
+.auth-card h1 em{color:#078b35!important}
+.auth-card>p{color:#68756b!important}
+.auth-card label{color:#39463c!important}
+.auth-card input{background:#fbfdfb!important;border:1px solid #dce6dd!important;color:#172019!important;border-radius:11px!important}
+.auth-card input::placeholder{color:#929d94!important}
+.auth-card input:focus{border-color:#078b35!important;box-shadow:0 0 0 3px rgba(8,139,53,.1)!important}
+.auth-submit{background:#078b35!important;color:#fff!important;border:1px solid #078b35!important;border-radius:12px!important;box-shadow:0 8px 20px rgba(8,139,53,.15)!important}
+.auth-error{background:#fff1ef!important;border-color:#f0c9c3!important;color:#a43d30!important}
+.auth-switch{color:#718076!important}.auth-switch a{color:#078b35!important}
+.auth-safe{border-color:#e5ece6!important;color:#718076!important}.auth-safe svg{color:#078b35!important}
+.auth-back{color:#647268!important}.auth-back:hover{color:#078b35!important}
+@media(max-width:500px){.auth-screen{justify-content:flex-start;padding-top:110px!important;padding-bottom:76px!important}.auth-brand{top:22px!important;left:20px!important}.auth-card{width:100%!important;padding:27px 22px!important}.auth-card h1{font-size:36px!important}.auth-back{bottom:22px!important}}
+/* Bring account and artist workspaces into the same light visual system */
+.artist-dashboard{background:#f7faf7!important;color:#172019!important}
+.artist-top{background:rgba(255,255,255,.94)!important;border-color:#e3ebe4!important}
+.artist-back{color:#657268!important}.artist-back:hover{color:#078b35!important}
+.artist-top-brand{color:#172019!important}
+.artist-top-brand>span:last-child{color:#078b35!important}
+.artist-user{color:#657268!important}
+.artist-heading h1{color:#172019!important}.artist-heading h1 em{color:#078b35!important}
+.artist-heading p{color:#68756b!important}
+.artist-heading-mark{background:#edf8ef!important;border-color:#cce8d1!important;color:#078b35!important;box-shadow:0 10px 24px rgba(25,55,32,.06)!important}
+.artist-status-card,.artist-panel{background:#fff!important;border:1px solid #e1e9e2!important;box-shadow:0 8px 24px rgba(25,55,32,.045)!important;color:#172019!important}
+.artist-status-icon{background:#edf8ef!important;color:#078b35!important}
+.artist-status-copy h2,.artist-panel-title h2{color:#172019!important}
+.artist-status-copy p,.artist-panel-title p{color:#68756b!important}
+.artist-info-strip{background:#f0f8f1!important;border-color:#d9ebdc!important;color:#4c5b4f!important}
+.artist-empty{color:#68756b!important}
+.artist-empty b{color:#172019!important}
+.artist-submit,.sq-review-approve{background:#078b35!important;color:#fff!important;border-color:#078b35!important}
+.sq-review-reject,.sq-refresh{background:#fff!important;color:#344238!important;border-color:#dce6dd!important}
+.artist-dashboard input,.artist-dashboard textarea,.artist-dashboard select{background:#fbfdfb!important;color:#172019!important;border-color:#dce6dd!important}
+.artist-dashboard .account-link{background:#fff!important;border-color:#e1e9e2!important;color:#172019!important}
+.artist-dashboard .account-link small{color:#68756b!important}
