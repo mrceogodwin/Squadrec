@@ -28,7 +28,7 @@ export async function GET() {
       },
     },
   });
-  return NextResponse.json({ contracts });
+  const acceptedOffers = await prisma.acquisitionOffer.findMany({ where: { status: "ACCEPTED", ...(isAdmin ? {} : { track: { artistProfile: { userId: session.user.id } } }), contracts: { none: {} } }, include: { track: { select: { title: true, artistProfile: { select: { stageName: true } } } }, buyer: { select: { name: true, email: true } } }, orderBy: { updatedAt: "desc" } });\n  return NextResponse.json({ contracts, acceptedOffers });
 }
 
 export async function POST(request: Request) {
