@@ -17,6 +17,7 @@ export default function NewTrackPage() {
   const [type,setType]=useState<"RELEASED"|"EXCLUSIVE">("RELEASED");
   const [price,setPrice]=useState("");
   const [audio,setAudio]=useState<File|null>(null);
+  const [preview,setPreview]=useState<File|null>(null);
   const [artwork,setArtwork]=useState<File|null>(null);
   const [rights,setRights]=useState<File|null>(null);
   const [message,setMessage]=useState("");
@@ -32,7 +33,7 @@ export default function NewTrackPage() {
 
   async function submit(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
-    const fileError = validFile(audio,"audio") || validFile(artwork,"cover artwork") || validFile(rights,"rights evidence");
+    const fileError = validFile(audio,"audio") || (type==="EXCLUSIVE" ? validFile(preview,"10-second preview clip") : "") || validFile(artwork,"cover artwork") || validFile(rights,"rights evidence");
     if (fileError) { setMessage(fileError); return; }
     setLoading(true);setMessage("");
     let draftId = "";
@@ -44,7 +45,8 @@ export default function NewTrackPage() {
       draftId=draftData.track.id;
 
       setStep("Uploading audio, artwork and rights evidence securely…");
-      for (const [kind,file] of [["audio",audio!],["artwork",artwork!],["rights",rights!]] as const) {
+      const uploadItems: Array<["audio"|"preview"|"artwork"|"rights",File]> = [["audio",audio!], ...(type==="EXCLUSIVE" ? [["preview",preview!] as ["preview",File]] : []), ["artwork",artwork!], ["rights",rights!]];
+      for (const [kind,file] of uploadItems) {
         setStep(`Uploading ${kind} securely…`);
         const form = new FormData();
         form.append(kind,file);
@@ -77,8 +79,9 @@ export default function NewTrackPage() {
         <label>Store price (USD)<input type="number" min="0.01" step="0.01" value={price} onChange={e=>setPrice(e.target.value)} placeholder="Optional for released music" disabled={type==="EXCLUSIVE"}/></label>
         <label className="full">Description<textarea rows={3} maxLength={2000} value={description} onChange={e=>setDescription(e.target.value)} placeholder="Credits, release notes or a short description…"/></label>
 
-        <div className="artist-upload-section full"><span className="eyebrow">STEP 02 · REQUIRED FILES</span><h2>Attach your music and documents</h2><p>Files are stored in private SQUADREC storage. Each file is currently limited to 4 MB.</p>
+        <div className="artist-upload-section full"><span className="eyebrow">STEP 02 · REQUIRED FILES</span><h2>Attach your music and documents</h2><p>Files are stored in private SQUADREC storage. Each file is currently limited to 4 MB. Exclusive tracks require a separate preview clip trimmed to 10 seconds before upload.</p>
           <label className="artist-file-field"><span className="artist-file-icon"><FileAudio/></span><span><b>Audio master</b><small>MP3, WAV, M4A, AAC, FLAC, OGG · max 4 MB</small><strong>{audio ? audio.name : "Choose audio file"}</strong></span><input required type="file" accept=".mp3,.wav,.m4a,.aac,.flac,.ogg,.webm,audio/*" onChange={e=>setAudio(e.target.files?.[0]||null)}/><UploadCloud size={18}/></label>
+          {type==="EXCLUSIVE" && <label className="artist-file-field"><span className="artist-file-icon"><FileAudio/></span><span><b>10-second preview clip</b><small>Upload a separate, pre-trimmed preview only · max 4 MB</small><strong>{preview ? preview.name : "Choose preview clip"}</strong></span><input required type="file" accept=".mp3,.wav,.m4a,.aac,.flac,.ogg,.webm,audio/*" onChange={e=>setPreview(e.target.files?.[0]||null)}/><UploadCloud size={18}/></label>}
           <label className="artist-file-field"><span className="artist-file-icon"><ImageIcon/></span><span><b>Cover artwork</b><small>JPG, PNG, WEBP · max 4 MB</small><strong>{artwork ? artwork.name : "Choose artwork"}</strong></span><input required type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onChange={e=>setArtwork(e.target.files?.[0]||null)}/><UploadCloud size={18}/></label>
           <label className="artist-file-field"><span className="artist-file-icon"><FileCheck2/></span><span><b>Rights evidence</b><small>Signed rights declaration, agreement or proof · PDF/JPG/PNG · max 4 MB</small><strong>{rights ? rights.name : "Choose rights document"}</strong></span><input required type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" onChange={e=>setRights(e.target.files?.[0]||null)}/><UploadCloud size={18}/></label>
         </div>
