@@ -29,7 +29,9 @@ export async function GET() {
     },
   });
   const acceptedOffers = await prisma.acquisitionOffer.findMany({ where: { status: "ACCEPTED", ...(isAdmin ? {} : { track: { artistProfile: { userId: session.user.id } } }), contracts: { none: {} } }, include: { track: { select: { title: true, artistProfile: { select: { stageName: true } } } }, buyer: { select: { name: true, email: true } } }, orderBy: { updatedAt: "desc" } });
-  return NextResponse.json({ contracts, acceptedOffers, viewerId: session.user.id });
+  const contractIds = contracts.map((contract) => contract.id);
+  const reviewEvents = contractIds.length ? await prisma.auditLog.findMany({ where: { entityType: "Contract", entityId: { in: contractIds }, action: { in: ["CONTRACT_TERMS_ACCEPTED_PENDING_SIGNATURE", "CONTRACT_CHANGES_REQUESTED"] } }, orderBy: { createdAt: "desc" }, select: { entityId: true, action: true, createdAt: true, metadata: true, actorId: true } }) : [];
+  return NextResponse.json({ contracts, acceptedOffers, viewerId: session.user.id, reviewEvents });
 }
 
 export async function POST(request: Request) {
