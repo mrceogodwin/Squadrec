@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Verified payment amount or currency does not match the contract." }, { status: 400 });
   }
 
-  const contract = await prisma.contract.findUnique({ where: { id: matching.entityId }, select: { id: true, status: true, contractType: true, signedAt: true } });
+  const contract = await prisma.contract.findUnique({ where: { id: matching.entityId }, select: { id: true, status: true, contractType: true, signedAt: true, completedAt: true } });
   if (!contract) return NextResponse.json({ error: "Contract not found." }, { status: 404 });
   if (contract.status === "COMPLETED" && contract.completedAt) return NextResponse.json({ received: true, alreadyProcessed: true });
   if (contract.status !== "PAYMENT_PENDING" || !contract.signedAt) return NextResponse.json({ error: "Contract is not signed and awaiting payment." }, { status: 409 });
