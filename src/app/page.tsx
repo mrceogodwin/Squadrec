@@ -25,14 +25,20 @@ function Cover({ src, title }: { src: string; title: string }) {
 }
 
 export default function Home() {
-  const [tracks, setTracks] = useState<CatalogueTrack[]>([]);\n  const [catalogueLoading, setCatalogueLoading] = useState(true);\n  const [playing, setPlaying] = useState<string | null>(null);
+  const [tracks, setTracks] = useState<CatalogueTrack[]>([]);
+  const [catalogueLoading, setCatalogueLoading] = useState(true);
+  const [catalogueLoading, setCatalogueLoading] = useState(true);
+  const [playing, setPlaying] = useState<string | null>(null);
   const [saved, setSaved] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [notice, setNotice] = useState("");
   const [activeGenre, setActiveGenre] = useState("All");
-  const filtered = useMemo(() => tracks.filter(t => (t.title + t.artist + t.genre).toLowerCase().includes(query.toLowerCase()) && (activeGenre === "All" || t.genre === activeGenre)), [query, activeGenre]);
+  useEffect(() => {
+    fetch("/api/catalogue/released").then(r => r.ok ? r.json() : { tracks: [] }).then(data => setTracks((data.tracks || []).map((t: any) => ({ id: t.id, title: t.title, artist: t.artistProfile?.stageName || "Independent artist", genre: t.genre?.name || "Uncategorised", art: t.artworkUrl || "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=700&auto=format&fit=crop&q=80", duration: duration(t.durationSeconds), rank: "Approved release" })))).catch(() => setTracks([])).finally(() => setCatalogueLoading(false));
+  }, []);
+  const filtered = useMemo(() => tracks.filter(t => (t.title + t.artist + t.genre).toLowerCase().includes(query.toLowerCase()) && (activeGenre === "All" || t.genre === activeGenre)), [tracks, query, activeGenre]);
   const current = tracks.find(t => t.id === playing);
   const notify = (message: string) => { setNotice(message); window.setTimeout(() => setNotice(""), 2600); };
   const toggleSave = (id: string) => setSaved(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
