@@ -20,11 +20,6 @@ export async function POST(request: Request) {
   try { event = JSON.parse(rawBody); } catch { return NextResponse.json({ error: "Invalid event payload." }, { status: 400 }); }
   if (event.event !== "charge.success" || !event.data?.reference) return NextResponse.json({ received: true });
 
-  const paymentEvent = await prisma.auditLog.findFirst({
-    where: { action: "PAYMENT_INITIALIZED", entityType: "Contract" },
-    orderBy: { createdAt: "desc" },
-    select: { entityId: true, metadata: true },
-  });
   const reference = event.data.reference;
   const matching = await prisma.auditLog.findFirst({
     where: { action: "PAYMENT_INITIALIZED", entityType: "Contract", metadata: { path: ["reference"], equals: reference } },
