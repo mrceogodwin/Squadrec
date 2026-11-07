@@ -44,13 +44,14 @@ export default function NewTrackPage() {
       draftId=draftData.track.id;
 
       setStep("Uploading audio, artwork and rights evidence securely…");
-      const form = new FormData();
-      form.append("audio",audio!);
-      form.append("artwork",artwork!);
-      form.append("rights",rights!);
-      const assetResponse=await fetch(`/api/artist/tracks/${draftId}/assets`,{method:"POST",body:form});
-      const assetData=await assetResponse.json();
-      if(!assetResponse.ok) throw new Error(assetData.error||"File upload failed. Your draft has been saved; you can retry from the draft list.");
+      for (const [kind,file] of [["audio",audio!],["artwork",artwork!],["rights",rights!]] as const) {
+        setStep(`Uploading ${kind} securely…`);
+        const form = new FormData();
+        form.append(kind,file);
+        const assetResponse=await fetch(`/api/artist/tracks/${draftId}/assets`,{method:"POST",body:form});
+        const assetData=await assetResponse.json();
+        if(!assetResponse.ok) throw new Error(assetData.error||`Unable to upload ${kind}. Your draft has been saved; retry the upload.`);
+      }
 
       setStep("Submitting your track for review…");
       const submitResponse=await fetch(`/api/artist/tracks/${draftId}/submit`,{method:"POST"});
