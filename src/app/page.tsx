@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight, Bell, Check, ChevronDown, CloudUpload, Gem, Headphones,
   Heart, Menu, Pause, Play, Search, ShieldCheck, ShoppingBag, SkipBack,
@@ -28,6 +28,7 @@ export default function Home() {
   const [tracks, setTracks] = useState<CatalogueTrack[]>([]);
   const [catalogueLoading, setCatalogueLoading] = useState(true);
   const [playing, setPlaying] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [saved, setSaved] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -39,6 +40,16 @@ export default function Home() {
   }, []);
   const filtered = useMemo(() => tracks.filter(t => (t.title + t.artist + t.genre).toLowerCase().includes(query.toLowerCase()) && (activeGenre === "All" || t.genre === activeGenre)), [tracks, query, activeGenre]);
   const current = tracks.find(t => t.id === playing);
+  const togglePlay = async (id: string) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing === id && !audio.paused) { audio.pause(); setPlaying(null); return; }
+    audio.pause();
+    audio.src = `/api/catalogue/released/${id}/audio`;
+    audio.load();
+    try { await audio.play(); setPlaying(id); }
+    catch { setPlaying(null); notify("This track could not be played right now."); }
+  };
   const notify = (message: string) => { setNotice(message); window.setTimeout(() => setNotice(""), 2600); };
   const toggleSave = (id: string) => setSaved(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
 
@@ -68,7 +79,7 @@ export default function Home() {
         <div className="sq-hero-art">
           <div className="sq-green-ribbon"/>
           <img className="sq-hero-person" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1100&auto=format&fit=crop&q=90" alt="Artist wearing sunglasses"/>
-          <div className="sq-floating-player">{tracks[0] ? <><Cover src={tracks[0].art} title={tracks[0].title}/><div className="sq-float-track"><b>{tracks[0].title}</b><span>{tracks[0].artist}</span></div><button onClick={() => notify("Audio previews will be enabled when secure audio delivery is connected.")} aria-label="Preview track"><Play size={17} fill="currentColor"/></button></> : <div className="sq-float-track"><b>Discover the next sound.</b><span>New approved releases will appear here.</span></div>}</div>
+          <div className="sq-floating-player">{tracks[0] ? <><Cover src={tracks[0].art} title={tracks[0].title}/><div className="sq-float-track"><b>{tracks[0].title}</b><span>{tracks[0].artist}</span></div><button onClick={() => tracks[0] && togglePlay(tracks[0].id)} aria-label="Play track">{playing===tracks[0]?.id?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button></> : <div className="sq-float-track"><b>Discover the next sound.</b><span>New approved releases will appear here.</span></div>}</div>
           <img className="sq-hero-stamp" src="/squadrec-mark.svg" alt="" />
         </div>
       </section>
@@ -77,7 +88,7 @@ export default function Home() {
 
       <section className="sq-section" id="trending">
         <div className="sq-section-head"><div><h2>Trending Now</h2><p>The sounds making their mark right now.</p></div><div className="sq-genres">{["All","Afrobeats","Hip-Hop","R&B","Amapiano","Afropop","Alternative"].map(g=><button key={g} className={activeGenre===g?"selected":""} onClick={()=>setActiveGenre(g)}>{g}</button>)}</div><a className="sq-view-all" href="#store">View All <ArrowRight size={16}/></a></div>
-        <div className="sq-track-grid">{filtered.map(t=><article className="sq-track-card" key={t.id}><div className="sq-track-image"><Cover src={t.art} title={t.title}/><button className="sq-track-play" onClick={()=>notify("Secure previews are not enabled yet. Audio delivery will be connected before public playback.")} aria-label="Preview track"><Play size={17} fill="currentColor"/></button><button className={saved.includes(t.id)?"sq-track-save saved":"sq-track-save"} onClick={()=>toggleSave(t.id)} aria-label="Save track"><Heart size={16} fill={saved.includes(t.id)?"currentColor":"none"}/></button></div><div className="sq-track-meta"><div><b>{t.title}</b><span>{t.artist} · {t.genre}</span></div><small>{t.rank}</small></div></article>)}</div>
+        <div className="sq-track-grid">{filtered.map(t=><article className="sq-track-card" key={t.id}><div className="sq-track-image"><Cover src={t.art} title={t.title}/><button className="sq-track-play" onClick={()=>togglePlay(t.id)} aria-label={playing===t.id?"Pause track":"Play track"}>{playing===t.id?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button><button className={saved.includes(t.id)?"sq-track-save saved":"sq-track-save"} onClick={()=>toggleSave(t.id)} aria-label="Save track"><Heart size={16} fill={saved.includes(t.id)?"currentColor":"none"}/></button></div><div className="sq-track-meta"><div><b>{t.title}</b><span>{t.artist} · {t.genre}</span></div><small>{t.rank}</small></div></article>)}</div>
         {filtered.length===0 && <p className="sq-empty">{catalogueLoading ? "Loading approved releases..." : query ? "No tracks match that search. Try another title or genre." : "No approved releases yet. Once artists are verified and their music is approved, it will appear here."}</p>}
       </section>
 
@@ -89,8 +100,8 @@ export default function Home() {
 
       <footer className="sq-footer"><a className="sq-logo" href="#"><img className="sq-logo-image" src="/squadrec-mark.svg" alt="" /><b>SQUADREC<sup>®</sup></b></a><span>© 2026 SQUADREC. Music worth finding. Music worth owning.</span><div><a href="/sign-in">Sign in</a><a href="/register">Create account</a><a href="/dashboard">Dashboard</a></div></footer>
 
-      <div className="sq-player"><div className="sq-player-current">{current ? <Cover src={current.art} title={current.title}/> : <div className="sq-player-placeholder"><Music2/></div>}<div><b>{current?.title || "SQUADREC PLAYER"}</b><span>{current?.artist || "Secure audio previews are being connected"}</span></div><button onClick={()=>current&&toggleSave(current.id)} aria-label="Save track"><Heart size={17} fill={current&&saved.includes(current.id)?"currentColor":"none"}/></button></div><div className="sq-player-controls"><div><span className="sq-player-placeholder"><Music2 size={16}/></span><span className="sq-player-placeholder"><ShieldCheck size={16}/></span><span className="sq-player-placeholder"><Headphones size={16}/></span></div><span>PREVIEW PLAYBACK WILL BE ENABLED AFTER SECURE AUDIO SETUP</span></div><div className="sq-player-extra"><span>RIGHTS FIRST</span><div/></div></div>
-      {notice && <div className="sq-toast"><Check size={16}/>{notice}<button onClick={()=>setNotice("")}><X size={15}/></button></div>}
+      <div className="sq-player"><div className="sq-player-current">{current ? <Cover src={current.art} title={current.title}/> : <div className="sq-player-placeholder"><Music2/></div>}<div><b>{current?.title || "SQUADREC PLAYER"}</b><span>{current?.artist || "Secure audio previews are being connected"}</span></div><button onClick={()=>current&&toggleSave(current.id)} aria-label="Save track"><Heart size={17} fill={current&&saved.includes(current.id)?"currentColor":"none"}/></button></div><div className="sq-player-controls"><div><button className="sq-player-play" disabled={!current} onClick={()=>current&&togglePlay(current.id)} aria-label={playing?"Pause":"Play"}>{playing?<Pause size={18}/>:<Play size={18}/>}</button><span className="sq-player-placeholder"><Music2 size={16}/></span><span className="sq-player-placeholder"><ShieldCheck size={16}/></span><span className="sq-player-placeholder"><Headphones size={16}/></span></div><span>{playing ? "NOW PLAYING · APPROVED RELEASE" : "SELECT A RELEASE TO START PLAYBACK"}</span></div><div className="sq-player-extra"><span>RIGHTS FIRST</span><div/></div></div>
+      <audio ref={audioRef} onEnded={()=>setPlaying(null)} onPause={()=>setPlaying(null)} />\n      {notice && <div className="sq-toast"><Check size={16}/>{notice}<button onClick={()=>setNotice("")}><X size={15}/></button></div>}
     </main>
   );
 }
