@@ -207,3 +207,5 @@ html{scroll-padding-top:90px}body{background:var(--app-bg)}button{transition:tra
 @media print{.sq-execution-panel{break-inside:avoid}.sq-execution-warning{background:#fff!important}}
 
 .artist-dashboard .exclusive-preview-audio{display:block;width:min(100%,360px);height:38px;margin:10px 0 12px;accent-color:#078b35}.artist-dashboard .exclusive-track-card audio{border-radius:30px}
+
+.artist-dashboard .sq-review-preview{display:grid;gap:8px;margin:12px 0;padding:12px;border:1px solid #dcebdd;border-radius:12px;background:#f5faf5}.artist-dashboard .sq-review-preview>b{display:flex;align-items:center;gap:7px;color:#28432e;font-size:11px}.artist-dashboard .sq-review-preview audio{width:min(100%,420px);height:38px}.artist-dashboard .sq-review-preview a{width:max-content;color:#078b35;font-size:10px;font-weight:700}
