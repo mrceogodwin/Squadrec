@@ -141,3 +141,58 @@ html{scroll-padding-top:90px}body{background:var(--app-bg)}button{transition:tra
 .artist-dashboard input,.artist-dashboard textarea,.artist-dashboard select{background:#fbfdfb!important;color:#172019!important;border-color:#dce6dd!important}
 .artist-dashboard .account-link{background:#fff!important;border-color:#e1e9e2!important;color:#172019!important}
 .artist-dashboard .account-link small{color:#68756b!important}
+
+/* Consistent light surfaces across every signed-in SQUADREC workspace */
+.artist-dashboard .artist-panel-title .eyebrow,.artist-dashboard .eyebrow{color:#078b35!important}
+.artist-dashboard .artist-status-pill{background:#edf8ef!important;color:#087b32!important;border-color:#cce8d1!important}
+.artist-dashboard .artist-locked,.artist-dashboard .artist-upload-ready{background:#f2f8f3!important;border:1px solid #dcebdd!important;color:#344238!important}
+.artist-dashboard .artist-locked b,.artist-dashboard .artist-upload-ready b{color:#172019!important}
+.artist-dashboard .artist-locked span,.artist-dashboard .artist-upload-ready span{color:#68756b!important}
+.artist-dashboard .artist-track-row{border-color:#e7eee8!important}
+.artist-dashboard .artist-track-row b{color:#172019!important}
+.artist-dashboard .artist-track-row span{color:#718076!important}
+.artist-dashboard .artist-track-icon{background:#edf8ef!important;color:#078b35!important}
+.artist-dashboard .artist-track-state{color:#078b35!important}
+.artist-dashboard .new-track-form label{color:#39463c!important}
+.artist-dashboard .new-track-form input,.artist-dashboard .new-track-form textarea,.artist-dashboard .new-track-form select{background:#fbfdfb!important;border:1px solid #dce6dd!important;color:#172019!important}
+.artist-dashboard .artist-form-error{color:#a43d30!important}
+.artist-dashboard .artist-submit{background:#078b35!important;color:white!important;border:1px solid #078b35!important}
+.artist-dashboard .account-stats .account-stat{background:#fff!important;border:1px solid #e1e9e2!important;color:#172019!important;box-shadow:0 8px 24px rgba(25,55,32,.04)!important}
+.artist-dashboard .account-stat span{color:#718076!important}
+.artist-dashboard .account-stat b{color:#172019!important}
+.artist-dashboard .account-stat svg{color:#078b35!important}
+.artist-dashboard .account-link{background:#fff!important;border:1px solid #e1e9e2!important;color:#172019!important;box-shadow:0 4px 14px rgba(25,55,32,.025)!important}
+.artist-dashboard .account-link>svg{color:#078b35!important}
+.artist-dashboard .account-link span b{color:#172019!important}
+.artist-dashboard .account-link span small{color:#718076!important}
+.artist-dashboard .sq-admin-panel,.artist-dashboard .sq-admin-stats>div,.artist-dashboard .sq-admin-panel-head{background:#fff!important;border:1px solid #e1e9e2!important;color:#172019!important;box-shadow:0 8px 24px rgba(25,55,32,.04)!important}
+.artist-dashboard .sq-admin-panel h2,.artist-dashboard .sq-admin-stats b,.artist-dashboard .sq-admin-stats span{color:#172019!important}
+.artist-dashboard .sq-admin-panel p,.artist-dashboard .sq-admin-stats small{color:#718076!important}
+.artist-dashboard .sq-admin-stats svg,.artist-dashboard .sq-admin-secure{color:#078b35!important}
+.artist-dashboard .sq-admin-chip{background:#edf8ef!important;color:#087b32!important;border-color:#cce8d1!important}
+.artist-dashboard .sq-review-card{background:#fff!important;border:1px solid #e1e9e2!important;box-shadow:0 6px 18px rgba(25,55,32,.035)!important}
+.artist-dashboard .sq-review-card h3,.artist-dashboard .sq-review-card b{color:#172019!important}
+.artist-dashboard .sq-review-card p,.artist-dashboard .sq-review-card small{color:#68756b!important}
+.artist-dashboard .sq-review-note{color:#39463c!important}
+.artist-dashboard .sq-review-note textarea{background:#fbfdfb!important;border-color:#dce6dd!important;color:#172019!important}
+.artist-dashboard .sq-review-tabs button{color:#68756b!important}
+.artist-dashboard .sq-review-tabs button.selected{color:#087b32!important;border-color:#078b35!important}
+.artist-dashboard .sq-review-empty{background:#f7faf7!important;color:#68756b!important}
+.artist-dashboard .sq-review-notice{background:#edf8ef!important;border-color:#dcebdd!important;color:#087b32!important}
+.artist-dashboard .sq-review-files a{background:#f1f9f2!important;border-color:#dcefe0!important;color:#087b32!important}
+.artist-dashboard .sq-contract-card{background:#fff!important;border-color:#e1e9e2!important}
+.artist-dashboard .sq-contract-top b{color:#172019!important}
+.artist-dashboard .sq-contract-top span,.artist-dashboard .sq-contract-meta{color:#68756b!important}
+.artist-dashboard .sq-contract-status{background:#edf8ef!important;border-color:#dcefe0!important;color:#087b32!important}
+.artist-dashboard .sq-contract-terms{border-color:#e7eee8!important;color:#39463c!important}
+.artist-dashboard .sq-contract-terms p{color:#59665c!important}
+.artist-dashboard .sq-contract-label{color:#39463c!important}
+.artist-dashboard .sq-contract-label textarea,.artist-dashboard .sq-contract-label select{background:#fbfdfb!important;border-color:#dce6dd!important;color:#172019!important}
+.artist-dashboard .sq-offer-response label{color:#39463c!important}
+.artist-dashboard .sq-offer-response input,.artist-dashboard .sq-offer-response textarea{background:#fbfdfb!important;border-color:#dce6dd!important;color:#172019!important}
+.artist-dashboard .sq-refresh{background:#fff!important;border-color:#dce6dd!important;color:#344238!important}
+.artist-dashboard .sq-review-reject{background:#fff!important;border-color:#dce6dd!important;color:#46534a!important}
+.artist-dashboard .sq-review-approve{background:#078b35!important;color:#fff!important}
+.artist-dashboard .artist-info-strip{background:#f0f8f1!important;border:1px solid #d9ebdc!important;color:#4c5b4f!important}
+.artist-dashboard .artist-info-strip svg{color:#078b35!important}
+@media(max-width:650px){.artist-dashboard .artist-wrap{padding:28px 16px!important}.artist-dashboard .artist-heading h1{font-size:38px!important}.artist-dashboard .artist-top{padding:0 16px!important}.artist-dashboard .artist-heading-mark{width:58px!important;height:58px!important}.artist-dashboard .account-stats{grid-template-columns:1fr 1fr!important}}
