@@ -1,0 +1,263 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  LISTENER
+  ARTIST
+  AUTHORISED_UPLOADER
+  INDUSTRY_BUYER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum VerificationStatus {
+  NOT_SUBMITTED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum TrackType {
+  RELEASED
+  EXCLUSIVE
+}
+
+enum TrackStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+enum OfferStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  COUNTERED
+  ACCEPTED
+  DECLINED
+  WITHDRAWN
+  COMPLETED
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  PARTIALLY_SIGNED
+  SIGNED
+  PAYMENT_PENDING
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum ContractType {
+  OWNERSHIP_TRANSFER
+  EXCLUSIVE_LICENSE
+}
+
+enum PurchaseStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id                 String               @id @default(cuid())
+  name               String?
+  email              String               @unique
+  emailVerified      DateTime?
+  image              String?
+  passwordHash       String?
+  role               UserRole             @default(LISTENER)
+  verificationStatus VerificationStatus   @default(NOT_SUBMITTED)
+  isActive           Boolean              @default(true)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  accounts           Account[]
+  sessions           Session[]
+  artistProfile      ArtistProfile?
+  uploadedTracks     Track[]              @relation("TrackUploader")
+  offers             AcquisitionOffer[]   @relation("OfferBuyer")
+  purchases          Purchase[]
+  playlists          Playlist[]
+  auditEvents        AuditLog[]           @relation("AuditActor")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model ArtistProfile {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  stageName          String
+  biography          String?            @db.Text
+  country            String?
+  website            String?
+  verificationStatus VerificationStatus @default(NOT_SUBMITTED)
+  rightsDeclaration  Boolean            @default(false)
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tracks             Track[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+model Genre {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  tracks    Track[]
+  createdAt DateTime @default(now())
+}
+
+model Track {
+  id                String      @id @default(cuid())
+  title             String
+  slug              String      @unique
+  description       String?     @db.Text
+  type              TrackType   @default(RELEASED)
+  status            TrackStatus @default(DRAFT)
+  artistProfileId   String
+  uploaderId        String
+  genreId           String?
+  durationSeconds   Int?
+  previewSeconds    Int         @default(10)
+  currency          String      @default("USD")
+  priceMinor        Int?
+  artworkUrl        String?
+  audioObjectKey    String?
+  releaseDate       DateTime?
+  rightsVerifiedAt  DateTime?
+  publicPreview     Boolean     @default(true)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  artistProfile     ArtistProfile @relation(fields: [artistProfileId], references: [id], onDelete: Restrict)
+  uploader          User        @relation("TrackUploader", fields: [uploaderId], references: [id], onDelete: Restrict)
+  genre             Genre?      @relation(fields: [genreId], references: [id], onDelete: SetNull)
+  playlistItems     PlaylistTrack[]
+  purchases         Purchase[]
+  offers            AcquisitionOffer[]
+  @@index([type, status, createdAt])
+  @@index([artistProfileId])
+}
+
+model Playlist {
+  id          String          @id @default(cuid())
+  userId      String?
+  title       String
+  description String?
+  isPublic    Boolean         @default(true)
+  coverUrl    String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  user        User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tracks      PlaylistTrack[]
+}
+
+model PlaylistTrack {
+  id         String   @id @default(cuid())
+  playlistId String
+  trackId    String
+  position   Int
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  track      Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  @@unique([playlistId, trackId])
+  @@unique([playlistId, position])
+}
+
+model Purchase {
+  id                String         @id @default(cuid())
+  buyerId           String
+  trackId           String
+  amountMinor       Int
+  currency          String         @default("USD")
+  status            PurchaseStatus @default(PENDING)
+  paymentProvider   String?
+  providerReference String?        @unique
+  paidAt            DateTime?
+  createdAt         DateTime       @default(now())
+  buyer             User           @relation(fields: [buyerId], references: [id], onDelete: Restrict)
+  track             Track          @relation(fields: [trackId], references: [id], onDelete: Restrict)
+  @@index([buyerId, createdAt])
+}
+
+model AcquisitionOffer {
+  id                String      @id @default(cuid())
+  trackId           String
+  buyerId           String
+  amountMinor       Int?
+  currency          String      @default("USD")
+  proposedTerms     String?     @db.Text
+  message           String      @db.Text
+  status            OfferStatus @default(SUBMITTED)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  track             Track       @relation(fields: [trackId], references: [id], onDelete: Restrict)
+  buyer             User        @relation("OfferBuyer", fields: [buyerId], references: [id], onDelete: Restrict)
+  contracts         Contract[]
+  @@index([trackId, status])
+  @@index([buyerId, createdAt])
+}
+
+model Contract {
+  id              String         @id @default(cuid())
+  offerId         String
+  contractType    ContractType   @default(OWNERSHIP_TRANSFER)
+  status          ContractStatus @default(DRAFT)
+  terms           String         @db.Text
+  documentUrl     String?
+  signedAt        DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  offer           AcquisitionOffer @relation(fields: [offerId], references: [id], onDelete: Restrict)
+  @@index([status, createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  @@index([entityType, entityId, createdAt])
+}
