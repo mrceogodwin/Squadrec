@@ -43,7 +43,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     results[kind] = blob.pathname;
   }
 
-  if (results.audio || results.artwork) {
+  if (results.audio || results.preview || results.artwork) {
     await prisma.track.update({
       where: { id: track.id },
       data: {
