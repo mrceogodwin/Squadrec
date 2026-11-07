@@ -11,6 +11,10 @@ export async function GET(_request: Request, { params }: { params: { id: string 
   if (!["INDUSTRY_BUYER", "ADMIN", "SUPER_ADMIN"].includes(session.user.role)) {
     return NextResponse.json({ error: "Verified industry access is required." }, { status: 403 });
   }
+  if (session.user.role === "INDUSTRY_BUYER") {
+    const buyer = await prisma.user.findUnique({ where: { id: session.user.id }, select: { isActive: true, verificationStatus: true } });
+    if (!buyer?.isActive || buyer.verificationStatus !== "VERIFIED") return NextResponse.json({ error: "Your industry account must be verified and active to preview this music." }, { status: 403 });
+  }
 
   const track = await prisma.track.findFirst({
     where: { id: params.id, type: "EXCLUSIVE", status: "APPROVED" },
