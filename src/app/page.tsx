@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import {
   Activity, ArrowDownToLine, ArrowLeft, ArrowRight, AudioLines, Bell, Check,
-  ChevronDown, Disc3, Headphones, Heart, Home, Library, ListMusic, Menu,
+  ChevronDown, Disc3, Headphones, Heart, House, Library, ListMusic, Menu,
   MoreHorizontal, Pause, Play, Plus, Radio, Search, Settings2, ShieldCheck,
   ShoppingBag, SkipBack, SkipForward, SlidersHorizontal, Sparkles, TrendingUp,
   Upload, UserRound, X
@@ -38,7 +38,7 @@ function Cover({ art, large = false }: { art: string; large?: boolean }) {
   return <div className={`cover ${art} ${large ? "cover-large" : ""}`}><span className="cover-mark">SR</span></div>;
 }
 
-export default function Home() {
+export default function House() {
   const [activeNav, setActiveNav] = useState("Discover");
   const [playing, setPlaying] = useState<string | null>(null);
   const [saved, setSaved] = useState<string[]>([]);
@@ -65,7 +65,7 @@ export default function Home() {
   }
 
   const navItems = [
-    { label: "Discover", icon: Home },
+    { label: "Discover", icon: House },
     { label: "Charts", icon: TrendingUp },
     { label: "Playlists", icon: ListMusic },
     { label: "Music Store", icon: ShoppingBag },
