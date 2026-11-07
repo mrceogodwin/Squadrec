@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { ArrowLeft, Printer, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
+import PrintContractButton from "./print-button";
 
 export default async function ContractDocumentPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -21,7 +22,7 @@ export default async function ContractDocumentPage({ params }: { params: { id: s
   if (!isAdmin && buyer.id !== session.user.id && rightsHolder.id !== session.user.id) notFound();
   const money = contract.offer.amountMinor == null ? "To be agreed" : new Intl.NumberFormat("en-US", { style: "currency", currency: contract.offer.currency }).format(contract.offer.amountMinor / 100);
   return <main className="artist-dashboard sq-contract-document">
-    <header className="artist-top sq-document-toolbar"><Link href="/dashboard/contracts" className="artist-back"><ArrowLeft size={16}/> Contract register</Link><span className="artist-top-brand"><span className="brand-symbol">SR</span> SQUADREC <span>AGREEMENT PREVIEW</span></span><button className="sq-refresh" onClick={() => {}}> <Printer size={15}/> Print from browser </button></header>
+    <header className="artist-top sq-document-toolbar"><Link href="/dashboard/contracts" className="artist-back"><ArrowLeft size={16}/> Contract register</Link><span className="artist-top-brand"><span className="brand-symbol">SR</span> SQUADREC <span>AGREEMENT PREVIEW</span></span><PrintContractButton/></header>
     <article className="sq-document-sheet">
       <div className="sq-document-brand">SQUADREC <span>THE SOUND. THE CULTURE.</span></div>
       <div className="sq-document-kicker">PRIVATE CONTRACT DOCUMENT · {contract.contractType.replaceAll("_", " ")}</div>
