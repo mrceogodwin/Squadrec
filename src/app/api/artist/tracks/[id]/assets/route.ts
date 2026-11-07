@@ -24,7 +24,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   const form = await request.formData();
   const uploads = (["audio", "artwork", "rights"] as const).map(kind => ({ kind, file: form.get(kind) })).filter((item): item is { kind: "audio" | "artwork" | "rights"; file: File } => item.file instanceof File && item.file.size > 0);
-  if (!uploads.length) return NextResponse.json({ error: "Choose at least one file to upload." }, { status: 400 });
+  if (uploads.length !== 1) return NextResponse.json({ error: "Upload one file per request." }, { status: 400 });
 
   const results: Record<string, string> = {};
   for (const { kind, file } of uploads) {
