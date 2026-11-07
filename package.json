@@ -1,1 +1,33 @@
-{"name":"squadrec","version":"1.0.0","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start","lint":"next lint"},"dependencies":{"next":"14.2.31","react":"^18.3.1","react-dom":"^18.3.1","lucide-react":"^0.468.0"},"devDependencies":{"@types/node":"^22.10.2","@types/react":"^18.3.18","@types/react-dom":"^18.3.5","typescript":"^5.7.2"}}
+{
+  "name": "squadrec",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "next": "14.2.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "lucide-react": "^0.468.0",
+    "@auth/prisma-adapter": "^2.11.1",
+    "@prisma/client": "^6.19.0",
+    "bcryptjs": "^3.0.2",
+    "next-auth": "^5.0.0-beta.30",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.7.2",
+    "prisma": "^6.19.0"
+  }
+}
