@@ -11,7 +11,7 @@ export async function GET(_request: Request, { params }: { params: { id: string;
   const isAdmin = ["ADMIN", "SUPER_ADMIN"].includes(session.user.role);
   const track = await prisma.track.findUnique({
     where: { id: params.id },
-    select: { id: true, title: true, uploaderId: true, artworkUrl: true, audioObjectKey: true, artistProfile: { select: { userId: true } } },
+    select: { id: true, title: true, uploaderId: true, artworkUrl: true, audioObjectKey: true, previewObjectKey: true, artistProfile: { select: { userId: true } } },
   });
   if (!track) return NextResponse.json({ error: "File not found." }, { status: 404 });
   if (!isAdmin && track.uploaderId !== session.user.id && track.artistProfile.userId !== session.user.id) {
@@ -20,6 +20,7 @@ export async function GET(_request: Request, { params }: { params: { id: string;
   let pathname: string | null = null;
   let fallbackType = "application/octet-stream";
   if (params.kind === "audio") { pathname = track.audioObjectKey; fallbackType = "audio/mpeg"; }
+  else if (params.kind === "preview") { pathname = track.previewObjectKey; fallbackType = "audio/mpeg"; }
   else if (params.kind === "artwork") { pathname = track.artworkUrl; fallbackType = "image/jpeg"; }
   else if (params.kind === "rights") {
     if (!isAdmin) return NextResponse.json({ error: "Rights evidence is restricted to administrators." }, { status: 403 });
