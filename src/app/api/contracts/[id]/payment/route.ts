@@ -18,12 +18,6 @@ export async function POST(_request: Request, { params }: { params: { id: string
   });
   if (!contract) return NextResponse.json({ error: "Contract not found." }, { status: 404 });
   if (contract.offer.buyer.id !== session.user.id) return NextResponse.json({ error: "Only the acquiring buyer can initiate payment." }, { status: 403 });
-  if (contract.status !== "SIGNED" || !contract.signedAt) return NextResponse.json({ error: "Payment can only begin after the agreement has been signed by all required parties." }, { status: 409 });
-  const amount = contract.offer.amountMinor;
-  if (!amount || amount <= 0) return NextResponse.json({ error: "The accepted offer has no valid payment amount." }, { status: 400 });
-  const currency = contract.offer.currency.toUpperCase();
-  if (!/^[A-Z]{3}$/.test(currency)) return NextResponse.json({ error: "The contract currency is invalid." }, { status: 400 });
-
   const existing = await prisma.auditLog.findFirst({
     where: { entityType: "Contract", entityId: contract.id, action: "PAYMENT_INITIALIZED" },
     orderBy: { createdAt: "desc" },
@@ -33,6 +27,12 @@ export async function POST(_request: Request, { params }: { params: { id: string
   if (contract.status === "PAYMENT_PENDING" && previous?.authorizationUrl) {
     return NextResponse.json({ authorizationUrl: previous.authorizationUrl, reference: previous.reference });
   }
+  if (contract.status !== "SIGNED" || !contract.signedAt) return NextResponse.json({ error: "Payment can only begin after the agreement has been signed by all required parties." }, { status: 409 });
+  const amount = contract.offer.amountMinor;
+  if (!amount || amount <= 0) return NextResponse.json({ error: "The accepted offer has no valid payment amount." }, { status: 400 });
+  const currency = contract.offer.currency.toUpperCase();
+  if (!/^[A-Z]{3}$/.test(currency)) return NextResponse.json({ error: "The contract currency is invalid." }, { status: 400 });
+
 
   const reference = "squadrec_" + contract.id + "_" + randomUUID().replaceAll("-", "");
   const response = await fetch("https://api.paystack.co/transaction/initialize", {
