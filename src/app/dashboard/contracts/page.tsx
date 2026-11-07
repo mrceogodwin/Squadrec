@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, FileSignature, ShieldCheck, Clock3, FileText, BadgeCheck, RefreshCw } from "lucide-react";
 
-type AcceptedOffer = {id:string;amountMinor:number|null;currency:string;track:{title:string;artistProfile:{stageName:string}};buyer:{name:string|null;email:string}};\ntype Contract = { id:string; status:string; contractType:string; terms:string; createdAt:string; offer:{ id:string; amountMinor:number|null; currency:string; track:{id:string;title:string;artistProfile:{stageName:string;userId:string}}; buyer:{id:string;name:string|null;email:string} } };
+type AcceptedOffer = {id:string;amountMinor:number|null;currency:string;track:{title:string;artistProfile:{stageName:string}};buyer:{name:string|null;email:string}};
+type Contract = { id:string; status:string; contractType:string; terms:string; createdAt:string; offer:{ id:string; amountMinor:number|null; currency:string; track:{id:string;title:string;artistProfile:{stageName:string;userId:string}}; buyer:{id:string;name:string|null;email:string} } };
 export default function ContractsPage(){
  const [items,setItems]=useState<Contract[]>([]);const [accepted,setAccepted]=useState<AcceptedOffer[]>([]);const [terms,setTerms]=useState<Record<string,string>>({});const [types,setTypes]=useState<Record<string,"OWNERSHIP_TRANSFER"|"EXCLUSIVE_LICENSE">>({});const [busy,setBusy]=useState("");const [notice,setNotice]=useState("");const [loading,setLoading]=useState(true);const [error,setError]=useState("");
  async function load(){setLoading(true);try{const r=await fetch("/api/contracts");const d=await r.json();if(!r.ok)throw new Error(d.error||"Unable to load contracts.");setItems(d.contracts||[]);setAccepted(d.acceptedOffers||[]);setError("");}catch(e){setError(e instanceof Error?e.message:"Unable to load contracts.");}finally{setLoading(false);}}
