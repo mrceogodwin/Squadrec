@@ -27,7 +27,6 @@ function Cover({ src, title }: { src: string; title: string }) {
 export default function Home() {
   const [tracks, setTracks] = useState<CatalogueTrack[]>([]);
   const [catalogueLoading, setCatalogueLoading] = useState(true);
-  const [catalogueLoading, setCatalogueLoading] = useState(true);
   const [playing, setPlaying] = useState<string | null>(null);
   const [saved, setSaved] = useState<string[]>([]);
   const [query, setQuery] = useState("");
