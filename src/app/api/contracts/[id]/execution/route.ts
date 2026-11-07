@@ -29,9 +29,9 @@ export async function GET(_request: Request, { params }: { params: { id: string 
       signatureProviderConfigured: Boolean(process.env.DOCUSIGN_INTEGRATION_KEY && process.env.DOCUSIGN_USER_ID && process.env.DOCUSIGN_ACCOUNT_ID && process.env.DOCUSIGN_PRIVATE_KEY),
       signaturesComplete: ["SIGNED", "PAYMENT_PENDING", "COMPLETED"].includes(contract.status) && Boolean(contract.signedAt),
       paymentVerified: contract.status === "COMPLETED" && Boolean(contract.completedAt),
-      ownershipTransferComplete: contract.contractType === "OWNERSHIP_TRANSFER" && contract.status === "COMPLETED" && Boolean(contract.completedAt),
+      ownershipTransferComplete: false,
     },
     events,
-    notice: "This is a status checklist, not a signature or legal verification service.",
+    notice: "This is a status checklist, not a signature or legal verification service. Payment completion does not itself update the rights register; ownership transfer must be separately recorded after legal and operational checks.",
   });
 }
