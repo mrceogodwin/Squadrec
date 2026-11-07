@@ -45,7 +45,7 @@ export default function Home() {
   return (
     <main className="sq-home">
       <header className="sq-header">
-        <a className="sq-logo" href="#"><span className="sq-logo-mark">S</span><b>SQUADREC<sup>®</sup></b></a>
+        <a className="sq-logo" href="#"><img className="sq-logo-image" src="/squadrec-mark.svg" alt="" /><b>SQUADREC<sup>®</sup></b></a>
         <button className="sq-mobile-menu" onClick={() => setMobileMenu(!mobileMenu)} aria-label="Toggle menu"><Menu /></button>
         <nav className={mobileMenu ? "sq-nav sq-nav-open" : "sq-nav"}>
           <a className="active" href="#">Home</a><a href="#trending">Discover</a><a href="#store">Store</a><a href="#vault">Exclusive Vault</a><a href="/dashboard/artist">For Artists</a><a href="/dashboard/industry">Industry</a>
@@ -69,7 +69,7 @@ export default function Home() {
           <div className="sq-green-ribbon"/>
           <img className="sq-hero-person" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1100&auto=format&fit=crop&q=90" alt="Artist wearing sunglasses"/>
           <div className="sq-floating-player">{tracks[0] ? <><Cover src={tracks[0].art} title={tracks[0].title}/><div className="sq-float-track"><b>{tracks[0].title}</b><span>{tracks[0].artist}</span></div><button onClick={() => notify("Audio previews will be enabled when secure audio delivery is connected.")} aria-label="Preview track"><Play size={17} fill="currentColor"/></button></> : <div className="sq-float-track"><b>Discover the next sound.</b><span>New approved releases will appear here.</span></div>}</div>
-          <div className="sq-hero-stamp">S</div>
+          <img className="sq-hero-stamp" src="/squadrec-mark.svg" alt="" />
         </div>
       </section>
 
@@ -87,7 +87,7 @@ export default function Home() {
 
       <section className="sq-stats"><div><Headphones/><b>Curated</b><span>Approved music catalogue</span></div><div><Users/><b>Artist-led</b><span>Creator-owned submissions</span></div><div><Gem/><b>Exclusive</b><span>Rights acquisition vault</span></div><div><ShoppingBag/><b>Verified</b><span>Industry buyer access</span></div></section>
 
-      <footer className="sq-footer"><a className="sq-logo" href="#"><span className="sq-logo-mark">S</span><b>SQUADREC<sup>®</sup></b></a><span>© 2026 SQUADREC. Music worth finding. Music worth owning.</span><div><a href="/sign-in">Sign in</a><a href="/register">Create account</a><a href="/dashboard">Dashboard</a></div></footer>
+      <footer className="sq-footer"><a className="sq-logo" href="#"><img className="sq-logo-image" src="/squadrec-mark.svg" alt="" /><b>SQUADREC<sup>®</sup></b></a><span>© 2026 SQUADREC. Music worth finding. Music worth owning.</span><div><a href="/sign-in">Sign in</a><a href="/register">Create account</a><a href="/dashboard">Dashboard</a></div></footer>
 
       <div className="sq-player"><div className="sq-player-current">{current ? <Cover src={current.art} title={current.title}/> : <div className="sq-player-placeholder"><Music2/></div>}<div><b>{current?.title || "SQUADREC PLAYER"}</b><span>{current?.artist || "Secure audio previews are being connected"}</span></div><button onClick={()=>current&&toggleSave(current.id)} aria-label="Save track"><Heart size={17} fill={current&&saved.includes(current.id)?"currentColor":"none"}/></button></div><div className="sq-player-controls"><div><span className="sq-player-placeholder"><Music2 size={16}/></span><span className="sq-player-placeholder"><ShieldCheck size={16}/></span><span className="sq-player-placeholder"><Headphones size={16}/></span></div><span>PREVIEW PLAYBACK WILL BE ENABLED AFTER SECURE AUDIO SETUP</span></div><div className="sq-player-extra"><span>RIGHTS FIRST</span><div/></div></div>
       {notice && <div className="sq-toast"><Check size={16}/>{notice}<button onClick={()=>setNotice("")}><X size={15}/></button></div>}
