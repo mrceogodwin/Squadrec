@@ -18,14 +18,14 @@ export async function GET(_request: Request, { params }: { params: { id: string 
     orderBy: { createdAt: "asc" },
     select: { action: true, createdAt: true, actorId: true, metadata: true },
   });
-  const buyerAcceptedTerms = events.some((event) => event.action === "CONTRACT_TERMS_ACCEPTED_PENDING_SIGNATURE");
-  const changesRequested = events.some((event) => event.action === "CONTRACT_CHANGES_REQUESTED" && event.createdAt > (events.find((item) => item.action === "CONTRACT_TERMS_ACCEPTED_PENDING_SIGNATURE")?.createdAt || new Date(0)));
+  const latestBuyerReview = [...events].reverse().find((event) => ["CONTRACT_TERMS_ACCEPTED_PENDING_SIGNATURE", "CONTRACT_CHANGES_REQUESTED"].includes(event.action));
+  const buyerAcceptedTerms = latestBuyerReview?.action === "CONTRACT_TERMS_ACCEPTED_PENDING_SIGNATURE";
   return NextResponse.json({
     contract: { id: contract.id, status: contract.status, contractType: contract.contractType, signedAt: contract.signedAt, completedAt: contract.completedAt },
     milestones: {
       draftPrepared: true,
       sentForReview: events.some((event) => event.action === "CONTRACT_SENT_FOR_REVIEW"),
-      buyerAcceptedTerms: buyerAcceptedTerms && !changesRequested,
+      buyerAcceptedTerms,
       signatureProviderConfigured: Boolean(process.env.DOCUSIGN_INTEGRATION_KEY && process.env.DOCUSIGN_USER_ID && process.env.DOCUSIGN_ACCOUNT_ID && process.env.DOCUSIGN_PRIVATE_KEY),
       signaturesComplete: ["SIGNED", "PAYMENT_PENDING", "COMPLETED"].includes(contract.status) && Boolean(contract.signedAt),
       paymentVerified: contract.status === "COMPLETED" && Boolean(contract.completedAt),
