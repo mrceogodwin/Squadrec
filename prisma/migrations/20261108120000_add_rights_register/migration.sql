@@ -1,0 +1,10 @@
+CREATE TABLE "RightsRecord" ("id" TEXT NOT NULL,"contractId" TEXT NOT NULL,"trackId" TEXT NOT NULL,"grantorId" TEXT NOT NULL,"granteeId" TEXT NOT NULL,"recordedById" TEXT NOT NULL,"rightsType" "ContractType" NOT NULL,"territory" TEXT NOT NULL DEFAULT 'Worldwide',"durationMonths" INTEGER,"effectiveAt" TIMESTAMP(3) NOT NULL,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "RightsRecord_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "RightsRecord_contractId_key" ON "RightsRecord"("contractId");
+CREATE INDEX "RightsRecord_trackId_createdAt_idx" ON "RightsRecord"("trackId","createdAt");
+CREATE INDEX "RightsRecord_grantorId_createdAt_idx" ON "RightsRecord"("grantorId","createdAt");
+CREATE INDEX "RightsRecord_granteeId_createdAt_idx" ON "RightsRecord"("granteeId","createdAt");
+ALTER TABLE "RightsRecord" ADD CONSTRAINT "RightsRecord_contractId_fkey" FOREIGN KEY ("contractId") REFERENCES "Contract"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RightsRecord" ADD CONSTRAINT "RightsRecord_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "Track"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RightsRecord" ADD CONSTRAINT "RightsRecord_grantorId_fkey" FOREIGN KEY ("grantorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RightsRecord" ADD CONSTRAINT "RightsRecord_granteeId_fkey" FOREIGN KEY ("granteeId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RightsRecord" ADD CONSTRAINT "RightsRecord_recordedById_fkey" FOREIGN KEY ("recordedById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
