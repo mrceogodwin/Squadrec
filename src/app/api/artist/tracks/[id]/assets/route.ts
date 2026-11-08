@@ -41,7 +41,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         const metadata = await parseBuffer(
           Buffer.from(await file.arrayBuffer()),
           { mimeType: file.type, size: file.size },
-          { duration: true, skipCovers: true, maxMemoryAllocation: 8 * 1024 * 1024 },
+          { duration: true, skipCovers: true },
         );
         const duration = metadata.format.duration;
         const targetSeconds = track.previewSeconds || 10;
