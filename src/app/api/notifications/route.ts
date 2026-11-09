@@ -18,6 +18,9 @@ const labels:Record<string,string>={
  ARTIST_APPLICATION_REJECTED:"Your artist application was not approved",
  TRACK_APPROVED:"Your track was approved",
  TRACK_REJECTED:"Your track needs changes",
+ BUYER_VERIFICATION_SUBMITTED:"Your industry buyer verification was submitted",
+ BUYER_VERIFICATION_APPROVED:"Your industry buyer verification was approved",
+ BUYER_VERIFICATION_REJECTED:"Your industry buyer verification was declined",
 };
 export async function GET(){
  const session=await auth();
@@ -30,7 +33,7 @@ export async function GET(){
   prisma.artistProfile.findUnique({where:{userId},select:{id:true}}),
   prisma.track.findMany({where:admin?{}:{OR:[{uploaderId:userId},{artistProfile:{userId}}]},select:{id:true}}),
  ]);
- const filters:any[]=[];
+ const filters:any[]=[{entityType:"User",entityId:userId}];
  if(offers.length)filters.push({entityType:"AcquisitionOffer",entityId:{in:offers.map(x=>x.id)}});
  if(contracts.length)filters.push({entityType:"Contract",entityId:{in:contracts.map(x=>x.id)}});
  if(artist)filters.push({entityType:"ArtistProfile",entityId:artist.id});
@@ -40,11 +43,14 @@ export async function GET(){
   id:e.id,title:labels[e.action],type:e.entityType,entityId:e.entityId,
   createdAt:e.createdAt.toISOString(),action:e.action,
   message:typeof e.metadata==="object"&&e.metadata&&"message" in e.metadata?String((e.metadata as {message?:unknown}).message||""):"",
-  href:e.entityType==="Contract"?"/dashboard/contracts/"+e.entityId:e.entityType==="AcquisitionOffer"?"/dashboard/artist/offers":e.entityType==="Track"?"/dashboard/artist":"/dashboard/artist",
+  href:e.entityType==="Contract"?"/dashboard/contracts/"+e.entityId:e.entityType==="AcquisitionOffer"?"/dashboard/artist/offers":e.entityType==="Track"?"/dashboard/artist":e.entityType==="User"?"/dashboard/industry/verification":"/dashboard/artist",
  }));
+ const buyerEvents=admin?await prisma.auditLog.findMany({where:{action:"BUYER_VERIFICATION_SUBMITTED",entityType:"User"},select:{entityId:true},distinct:["entityId"]}):[];
+ const pendingBuyerIds=buyerEvents.map(e=>e.entityId);
+ const pendingBuyerApplications=admin&&pendingBuyerIds.length?await prisma.user.count({where:{id:{in:pendingBuyerIds},verificationStatus:"PENDING"}}):0;
  const pending=admin?await prisma.$transaction([
   prisma.artistProfile.count({where:{verificationStatus:"PENDING"}}),
   prisma.track.count({where:{status:"PENDING_REVIEW"}}),
  ]):[0,0];
- return NextResponse.json({notifications,adminSummary:admin?{pendingArtistApplications:pending[0],pendingTracks:pending[1]}:null});
+ return NextResponse.json({notifications,adminSummary:admin?{pendingArtistApplications:pending[0],pendingTracks:pending[1],pendingBuyerApplications}:null});
 }
