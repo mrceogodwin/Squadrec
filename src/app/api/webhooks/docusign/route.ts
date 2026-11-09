@@ -14,11 +14,10 @@ function validHmac(rawBody: string, signature: string, secret: string) {
 }
 
 function getEvent(payload: any) {
-  const summary = payload?.data?.envelopeSummary || payload?.envelopeSummary || payload?.data || payload;
-  return {
-    envelopeId: String(summary?.envelopeId || payload?.envelopeId || ""),
-    status: String(summary?.status || payload?.status || "").toLowerCase(),
-  };
+  const data = payload?.data || {};
+  const eventName = String(payload?.event || "").toLowerCase();
+  const status = eventName.startsWith("envelope-") ? eventName.slice("envelope-".length) : String(data?.envelopeSummary?.status || payload?.status || "").toLowerCase();
+  return { envelopeId: String(data?.envelopeId || payload?.envelopeId || ""), status };
 }
 
 export async function POST(request: Request) {
