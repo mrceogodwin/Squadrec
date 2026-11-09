@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { ArrowLeft, BadgeCheck, FileAudio, ShieldCheck, Users, Building2 } from "lucide-react";
+import { ArrowLeft, BadgeCheck, FileAudio, ShieldCheck, Users, Building2, BookOpen } from "lucide-react";
 import ReviewCentre from "./review-centre";
 
 export default async function AdminDashboard() {
