@@ -20,18 +20,19 @@ export async function GET(_request: Request, { params }: { params: { id: string 
   });
   const latestBuyerReview = [...events].reverse().find((event) => ["CONTRACT_TERMS_ACCEPTED_PENDING_SIGNATURE", "CONTRACT_CHANGES_REQUESTED"].includes(event.action));
   const buyerAcceptedTerms = latestBuyerReview?.action === "CONTRACT_TERMS_ACCEPTED_PENDING_SIGNATURE";
+  const rightsRecord = await prisma.rightsRecord.findUnique({ where: { contractId: contract.id }, select: { id: true } });
   return NextResponse.json({
     contract: { id: contract.id, status: contract.status, contractType: contract.contractType, signedAt: contract.signedAt, completedAt: contract.completedAt },
     milestones: {
       draftPrepared: true,
       sentForReview: events.some((event) => event.action === "CONTRACT_SENT_FOR_REVIEW"),
       buyerAcceptedTerms,
-      signatureProviderConfigured: Boolean(process.env.DOCUSIGN_INTEGRATION_KEY && process.env.DOCUSIGN_USER_ID && process.env.DOCUSIGN_ACCOUNT_ID && process.env.DOCUSIGN_PRIVATE_KEY),
+      signatureProviderConfigured: Boolean(process.env.DOCUSIGN_INTEGRATION_KEY && process.env.DOCUSIGN_USER_ID && process.env.DOCUSIGN_ACCOUNT_ID && process.env.DOCUSIGN_PRIVATE_KEY && process.env.DOCUSIGN_CONNECT_HMAC_KEY),
       signaturesComplete: ["SIGNED", "PAYMENT_PENDING", "COMPLETED"].includes(contract.status) && Boolean(contract.signedAt),
       paymentVerified: contract.status === "COMPLETED" && Boolean(contract.completedAt),
-      ownershipTransferComplete: false,
+      ownershipTransferComplete: Boolean(rightsRecord),
     },
     events,
-    notice: "This is a status checklist, not a signature or legal verification service. Payment completion does not itself update the rights register; ownership transfer must be separately recorded after legal and operational checks.",
+    notice: "DocuSign completion is confirmed only after a signed Connect webhook passes HMAC validation and the envelope status is independently verified. Payment completion does not itself update the rights register; ownership transfer must be separately recorded after legal and operational checks.",
   });
 }
