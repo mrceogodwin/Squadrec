@@ -38,7 +38,7 @@ export async function getDocuSignAccessToken() {
   return String(data.access_token);
 }
 
-export function docuSignApiBase() { return API_BASE.replace(/\/$/, ""); }
+export function docuSignApiBase() { return API_BASE.endsWith("/") ? API_BASE.slice(0, -1) : API_BASE; }
 export function docuSignAccountId() { return required("DOCUSIGN_ACCOUNT_ID"); }
 
 export function buildContractPdf(lines: string[]) {
