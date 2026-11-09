@@ -108,12 +108,9 @@ export async function POST(_request: Request, { params }: { params: { id: string
         includeHMAC: "true",
         includeDocuments: "false",
         includeCertificateOfCompletion: "true",
-        envelopeEvents: [
-          { envelopeEventStatusCode: "sent" },
-          { envelopeEventStatusCode: "completed" },
-          { envelopeEventStatusCode: "declined" },
-          { envelopeEventStatusCode: "voided" },
-        ],
+        deliveryMode: "SIM",
+        events: ["envelope-sent", "envelope-completed", "envelope-declined", "envelope-voided"],
+        eventData: { version: "restv2.1", format: "json" },
       },
     };
     const response = await fetch(base + "/v2.1/accounts/" + encodeURIComponent(accountId) + "/envelopes", {
