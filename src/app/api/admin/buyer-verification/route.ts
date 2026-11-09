@@ -11,6 +11,14 @@ export async function GET(){
 }
 export async function POST(req:Request){
  const s=await auth();if(!s?.user?.id||!["ADMIN","SUPER_ADMIN"].includes(s.user.role))return NextResponse.json({error:"Administrator access required."},{status:403});const p=body.safeParse(await req.json().catch(()=>null));if(!p.success)return NextResponse.json({error:"Invalid review decision."},{status:400});
- const user=await prisma.user.findUnique({where:{id:p.data.userId},select:{id:true,verificationStatus:true,role:true}});if(!user||user.verificationStatus!=="PENDING")return NextResponse.json({error:"This verification is no longer pending."},{status:409});
- await prisma.$transaction([prisma.user.update({where:{id:user.id},data:{verificationStatus:p.data.decision==="approve"?"VERIFIED":"REJECTED",...(p.data.decision==="approve"?{role:"INDUSTRY_BUYER"}:{})}}),prisma.auditLog.create({data:{actorId:s.user.id,action:p.data.decision==="approve"?"BUYER_VERIFICATION_APPROVED":"BUYER_VERIFICATION_REJECTED",entityType:"User",entityId:user.id,metadata:{note:p.data.note||null,previousRole:user.role}}})]);return NextResponse.json({success:true,status:p.data.decision==="approve"?"VERIFIED":"REJECTED"});
+ const user=await prisma.user.findUnique({where:{id:p.data.userId},select:{id:true,verificationStatus:true,role:true,isActive:true}});if(!user||user.verificationStatus!=="PENDING"||!user.isActive)return NextResponse.json({error:"This verification is no longer pending or the account is inactive."},{status:409});
+ const nextStatus=p.data.decision==="approve"?"VERIFIED":"REJECTED";
+ const updated=await prisma.$transaction(async tx=>{
+  const changed=await tx.user.updateMany({where:{id:user.id,verificationStatus:"PENDING",isActive:true},data:{verificationStatus:nextStatus,...(p.data.decision==="approve"?{role:"INDUSTRY_BUYER"}:{})}});
+  if(changed.count!==1)return false;
+  await tx.auditLog.create({data:{actorId:s.user.id,action:p.data.decision==="approve"?"BUYER_VERIFICATION_APPROVED":"BUYER_VERIFICATION_REJECTED",entityType:"User",entityId:user.id,metadata:{note:p.data.note||null,previousRole:user.role}}});
+  return true;
+ });
+ if(!updated)return NextResponse.json({error:"This application was already reviewed or the account changed. Refresh the queue."},{status:409});
+ return NextResponse.json({success:true,status:nextStatus});
 }
