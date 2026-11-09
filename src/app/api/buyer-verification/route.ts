@@ -8,6 +8,7 @@ export async function POST(req:Request){
  const s=await auth();if(!s?.user?.id)return NextResponse.json({error:"Sign in first."},{status:401});
  const u=await prisma.user.findUnique({where:{id:s.user.id},select:{role:true,verificationStatus:true,isActive:true}});
  if(!u?.isActive)return NextResponse.json({error:"This account is inactive."},{status:403});
+ if(["ARTIST","AUTHORISED_UPLOADER"].includes(u.role))return NextResponse.json({error:"Use a separate listener account for industry buyer verification so your existing artist/uploader permissions are not changed."},{status:409});
  if(["ADMIN","SUPER_ADMIN"].includes(u.role))return NextResponse.json({error:"Administrator accounts do not need buyer verification."},{status:400});
  if(u.role==="INDUSTRY_BUYER"&&u.verificationStatus==="VERIFIED")return NextResponse.json({error:"This buyer account is already verified."},{status:409});
  if(u.verificationStatus==="PENDING")return NextResponse.json({error:"Your verification is already pending review."},{status:409});
