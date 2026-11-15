@@ -13,7 +13,7 @@ const choices = [
 export default function AccountTypePage(){
  const [selected,setSelected]=useState<(typeof choices)[number]["id"]>("ARTIST");
  return <main className={styles.page}>
-  <header className={styles.top}><Link href="/onboarding" aria-label="Back to home"><ArrowLeft size={20}/></Link><Link href="/onboarding" className={styles.brand}><span className={styles.mark}>▶▶</span> SQUADREC<sup>®</sup></Link><span/></header>
+  <header className={styles.top}><Link href="/onboarding" aria-label="Back to home"><ArrowLeft size={20}/></Link><Link href="/onboarding" className={styles.brand}><img className={styles.mark} src="/squadrec-purple-mark.svg" alt="" /> SQUADREC<sup>®</sup></Link><span/></header>
   <section className={styles.content}>
    <div className={styles.progress}><span/><i/><i/><i/></div>
    <div className={styles.heading}><span>STEP 01 · ACCOUNT SETUP</span><h1>Choose your<br/><em>account type.</em></h1><p>Choose the account that best describes how you work with music. Your workspace and permissions will be tailored to your role.</p></div>
