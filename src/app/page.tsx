@@ -73,7 +73,7 @@ export default function Home() {
           <div className="sq-overline sq-overline-pill"><span className="sq-wave">▮▮▮</span> MUSIC RIGHTS PLATFORM</div>
           <h1>Make music.<br/><span>Own the rights.</span></h1>
           <p>Release music, discover exclusive catalogues, and manage ownership from one place.</p>
-          <div className="sq-hero-actions"><a className="sq-button sq-button-peach" href="/register">Get started <ArrowRight size={19}/></a><a className="sq-button sq-button-outline" href="#platform">Explore platform</a></div>
+          <div className="sq-hero-actions"><a className="sq-button sq-button-peach" href="/get-started">Get started <ArrowRight size={19}/></a><a className="sq-button sq-button-outline" href="#platform">Explore platform</a></div>
           <div className="sq-hero-orbit" aria-hidden="true"/>
         </div>
         <div className="sq-product-stage">
@@ -107,7 +107,7 @@ export default function Home() {
 
       <section className="sq-stats"><div><Headphones/><b>Curated</b><span>Approved music catalogue</span></div><div><Users/><b>Artist-led</b><span>Creator-owned submissions</span></div><div><Gem/><b>Exclusive</b><span>Rights acquisition vault</span></div><div><ShoppingBag/><b>Verified</b><span>Industry buyer access</span></div></section>
 
-      <footer className="sq-footer"><a className="sq-logo" href="#"><img className="sq-logo-image" src="/squadrec-mark.svg" alt="" /><b>SQUADREC<sup>®</sup></b></a><span>© 2026 SQUADREC. Music worth finding. Music worth owning.</span><div><a href="/sign-in">Sign in</a><a href="/register">Create account</a><a href="/dashboard">Dashboard</a></div></footer>
+      <footer className="sq-footer"><a className="sq-logo" href="#"><img className="sq-logo-image" src="/squadrec-mark.svg" alt="" /><b>SQUADREC<sup>®</sup></b></a><span>© 2026 SQUADREC. Music worth finding. Music worth owning.</span><div><a href="/sign-in">Sign in</a><a href="/get-started">Create account</a><a href="/dashboard">Dashboard</a></div></footer>
 
       <div className="sq-player"><div className="sq-player-current">{current ? <Cover src={current.art} title={current.title}/> : <div className="sq-player-placeholder"><Music2/></div>}<div><b>{current?.title || "SQUADREC PLAYER"}</b><span>{current?.artist || "Secure audio previews are being connected"}</span></div><button onClick={()=>current&&toggleSave(current.id)} aria-label="Save track"><Heart size={17} fill={current&&saved.includes(current.id)?"currentColor":"none"}/></button></div><div className="sq-player-controls"><div><button className="sq-player-play" disabled={!current} onClick={()=>current&&togglePlay(current.id)} aria-label={playing?"Pause":"Play"}>{playing?<Pause size={18}/>:<Play size={18}/>}</button><span className="sq-player-placeholder"><Music2 size={16}/></span><span className="sq-player-placeholder"><ShieldCheck size={16}/></span><span className="sq-player-placeholder"><Headphones size={16}/></span></div><span>{playing ? "NOW PLAYING · APPROVED RELEASE" : "SELECT A RELEASE TO START PLAYBACK"}</span></div><div className="sq-player-extra"><span>RIGHTS FIRST</span><div/></div></div>
       <audio ref={audioRef} onEnded={()=>setPlaying(null)} onPause={()=>setPlaying(null)} />\n      {notice && <div className="sq-toast"><Check size={16}/>{notice}<button onClick={()=>setNotice("")}><X size={15}/></button></div>}
