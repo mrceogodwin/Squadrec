@@ -117,7 +117,7 @@ export default async function ArtistDashboardPage() {
             {tracks.map(track => (
               <article className="sq-artist-release" key={track.id}>
                 <div className="sq-artist-cover">
-                  {track.artworkUrl ? <img src={track.artworkUrl} alt={track.title + " artwork"}/> : <Disc3 size={23}/>}
+                  {track.artworkUrl ? <img src={`/api/admin/tracks/${track.id}/assets/artwork`} alt={track.title + " artwork"}/> : <Disc3 size={23}/>}
                 </div>
                 <div className="sq-artist-release-main">
                   <b>{track.title}</b>
