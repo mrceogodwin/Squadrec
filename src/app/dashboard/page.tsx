@@ -77,7 +77,7 @@ export default async function AccountDashboard() {
     <main className="artist-dashboard">
       <header className="artist-top">
         <Link href="/" className="artist-back"><ArrowRight size={16}/> Discovery</Link>
-        <Link href="/" className="artist-top-brand"><span className="brand-symbol">SR</span> SQUADREC <span>YOUR ACCOUNT</span></Link>
+        <Link href="/" className="artist-top-brand"><img className="sq-brand-mark" src="/squadrec-purple-mark.svg" alt="" /> SQUADREC <span>YOUR ACCOUNT</span></Link>
       </header>
       <div className="artist-wrap">
         <div className="artist-heading">
