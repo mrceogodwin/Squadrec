@@ -20,10 +20,16 @@ export async function POST(request: Request) {
   }
 
   const passwordHash = await hash(parsed.data.password, 12);
-  await prisma.$transaction([
-    prisma.user.update({ where: { id: record.userId }, data: { passwordHash } }),
-    prisma.passwordResetToken.deleteMany({ where: { userId: record.userId } }),
-    prisma.session.deleteMany({ where: { userId: record.userId } }),
-  ]);
+  const updated = await prisma.$transaction(async (tx) => {
+    const claimed = await tx.passwordResetToken.deleteMany({
+      where: { id: record.id, userId: record.userId, tokenHash, expiresAt: { gt: new Date() } },
+    });
+    if (claimed.count !== 1) return false;
+    await tx.user.update({ where: { id: record.userId }, data: { passwordHash } });
+    await tx.passwordResetToken.deleteMany({ where: { userId: record.userId } });
+    await tx.session.deleteMany({ where: { userId: record.userId } });
+    return true;
+  });
+  if (!updated) return NextResponse.json({ error: "This reset link has already been used or has expired. Request a new one." }, { status: 400 });
   return NextResponse.json({ message: "Your password has been updated. You can now sign in." });
 }
