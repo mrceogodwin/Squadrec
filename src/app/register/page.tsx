@@ -25,9 +25,9 @@ export default function RegisterPage(){
   }catch(e){setError(e instanceof Error?e.message:"Something went wrong. Please try again.");setLoading(false);}
  }
  return <main className={styles.page}>
-  <header className={styles.top}><Link href="/register/account-type"><ArrowLeft size={20}/></Link><Link href="/onboarding" className={styles.brand}><span>▶▶</span> SQUADREC<sup>®</sup></Link><span/></header>
+  <header className={styles.top}><Link href="/register/account-type"><ArrowLeft size={20}/></Link><Link href="/onboarding" className={styles.brand}><img src="/squadrec-mark.svg" alt="" /> SQUADREC<sup>®</sup></Link><span/></header>
   <section className={styles.card}>
-   <div className={styles.logo}>▶▶</div><div className={styles.brandName}>SQUADREC<sup>®</sup></div>
+   <div className={styles.logo}><img src="/squadrec-mark.svg" alt="SQUADREC" /></div><div className={styles.brandName}>SQUADREC<sup>®</sup></div>
    <div className={styles.step}>STEP 02 · {roles[role].toUpperCase()}</div>
    <h1>Create your<br/><em>account.</em></h1><p>It only takes a minute. You're creating a {roles[role].toLowerCase()} account.</p>
    <form onSubmit={submit}>
