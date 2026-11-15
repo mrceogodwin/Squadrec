@@ -5,7 +5,7 @@ import { ArrowRight, AudioLines, ChevronRight, Menu, Music2, ShieldCheck, Layers
 import styles from "./onboarding.module.css";
 
 function BrandMark() {
-  return <img src="/squadrec-purple-mark.svg" alt="" aria-hidden="true" className={styles.mark} />;
+  return <img src="/squadrec-mark.svg" alt="" aria-hidden="true" className={styles.mark} />;
 }
 
 const services = [
