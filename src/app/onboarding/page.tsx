@@ -4,7 +4,9 @@ import Link from "next/link";
 import { ArrowRight, AudioLines, ChevronRight, Menu, Music2, ShieldCheck, Layers3 } from "lucide-react";
 import styles from "./onboarding.module.css";
 
-function BrandMark() {\n  return <img src="/squadrec-purple-mark.svg" alt="" aria-hidden="true" className={styles.mark} />;\n}
+function BrandMark() {
+  return <img src="/squadrec-purple-mark.svg" alt="" aria-hidden="true" className={styles.mark} />;
+}
 
 const services = [
   { icon: Music2, title: "Release & distribute", copy: "Get your music ready for a wider audience." },
