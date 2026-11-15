@@ -1,11 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { ArrowRight, Disc3, ShieldCheck } from "lucide-react";
 
 export default function RegisterPage() {
+  const [accountType,setAccountType]=useState<"listener"|"artist"|"industry">("listener");
+  useEffect(()=>{const t=new URLSearchParams(window.location.search).get("type");if(t==="artist"||t==="industry"||t==="listener")setAccountType(t);},[]);
   const [name,setName]=useState("");
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
@@ -20,9 +22,9 @@ export default function RegisterPage() {
       if(!response.ok) {setError(data.error||"Registration failed.");setLoading(false);return;}
       const result=await signIn("credentials",{email,password,redirect:false,callbackUrl:"/"});
       if(result?.error) {setError("Account created. Please sign in.");setLoading(false);return;}
-      window.location.href=result?.url||"/";
+      window.location.href=accountType==="artist"?"/dashboard/artist":accountType==="industry"?"/dashboard/industry/verification":(result?.url||"/dashboard");
     } catch {setError("Something went wrong. Please try again.");setLoading(false);}
   }
 
-  return <main className="auth-screen"><div className="auth-glow"/><Link className="auth-brand" href="/"><span className="brand-symbol">SR</span><span>SQUADREC<small>THE SOUND. THE CULTURE.</small></span></Link><section className="auth-card"><div className="auth-icon"><Disc3 size={23}/></div><span className="eyebrow">YOUR NEXT CHAPTER</span><h1>Make room for<br/><em>great sound.</em></h1><p>Create your listener account. Artist and industry access can be requested after registration.</p><form onSubmit={submit}><label>Your name<input autoComplete="name" required minLength={2} maxLength={80} value={name} onChange={e=>setName(e.target.value)} placeholder="Your full name"/></label><label>Email address<input type="email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/></label><label>Password<input type="password" autoComplete="new-password" required minLength={10} maxLength={72} value={password} onChange={e=>setPassword(e.target.value)} placeholder="At least 10 characters"/></label>{error&&<div className="auth-error">{error}</div>}<button className="primary-action auth-submit" disabled={loading}>{loading?"Creating account...":"Create account"}<ArrowRight size={15}/></button></form><div className="auth-switch">Already have an account? <Link href="/sign-in">Sign in</Link></div><div className="auth-safe"><ShieldCheck size={14}/> Your account and music collection stay yours.</div></section><Link className="auth-back" href="/">← Back to discovery</Link></main>;
+  return <main className="auth-screen"><div className="auth-glow"/><Link className="auth-brand" href="/"><span className="brand-symbol">SR</span><span>SQUADREC<small>THE SOUND. THE CULTURE.</small></span></Link><section className="auth-card"><div className="auth-icon"><Disc3 size={23}/></div><span className="eyebrow">YOUR NEXT CHAPTER</span><h1>Make room for<br/><em>great sound.</em></h1><p>{accountType==="artist"?"Create your account, then submit your artist profile for review.":accountType==="industry"?"Create your account, then submit professional credentials for industry verification.":"Create your SQUADREC listener account and start discovering music."}</p><form onSubmit={submit}><label>Your name<input autoComplete="name" required minLength={2} maxLength={80} value={name} onChange={e=>setName(e.target.value)} placeholder="Your full name"/></label><label>Email address<input type="email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/></label><label>Password<input type="password" autoComplete="new-password" required minLength={10} maxLength={72} value={password} onChange={e=>setPassword(e.target.value)} placeholder="At least 10 characters"/></label>{error&&<div className="auth-error">{error}</div>}<button className="primary-action auth-submit" disabled={loading}>{loading?"Creating account...":"Create account"}<ArrowRight size={15}/></button></form><div className="auth-switch">Already have an account? <Link href="/sign-in">Sign in</Link></div><div className="auth-safe"><ShieldCheck size={14}/> Your account and music collection stay yours.</div></section><Link className="auth-back" href="/">← Back to discovery</Link></main>;
 }
