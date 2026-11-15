@@ -10,12 +10,17 @@ datasource db {
 enum UserRole {
   LISTENER
   ARTIST
-  RIGHTS_HOLDER
-  LABEL_PUBLISHER
   AUTHORISED_UPLOADER
   INDUSTRY_BUYER
   ADMIN
   SUPER_ADMIN
+}
+
+enum AccountType {
+  LISTENER
+  ARTIST
+  RIGHTS_HOLDER
+  LABEL_PUBLISHER
 }
 
 enum VerificationStatus {
@@ -79,6 +84,7 @@ model User {
   image              String?
   passwordHash       String?
   role               UserRole             @default(LISTENER)
+  accountType        AccountType          @default(LISTENER)
   verificationStatus VerificationStatus   @default(NOT_SUBMITTED)
   isActive           Boolean              @default(true)
   createdAt          DateTime             @default(now())
