@@ -47,7 +47,7 @@ export default async function ArtistDashboardPage() {
     <main className="artist-dashboard sq-artist-home">
       <header className="artist-top sq-artist-top">
         <Link href="/dashboard" className="artist-back"><ArrowRight size={15}/> Account</Link>
-        <Link href="/dashboard/artist" className="artist-top-brand"><span className="brand-symbol">SR</span> SQUADREC <span>ARTIST STUDIO</span></Link>
+        <Link href="/dashboard/artist" className="artist-top-brand"><img className="sq-brand-mark" src="/squadrec-purple-mark.svg" alt="" /> SQUADREC <span>ARTIST STUDIO</span></Link>
         <Link href="/dashboard/notifications" className="sq-artist-bell" aria-label="Notifications"><Bell size={18}/></Link>
       </header>
 
