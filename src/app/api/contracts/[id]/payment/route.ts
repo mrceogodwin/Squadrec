@@ -18,6 +18,7 @@ export async function POST(_request: Request, { params }: { params: { id: string
   });
   if (!contract) return NextResponse.json({ error: "Contract not found." }, { status: 404 });
   if (contract.offer.buyer.id !== session.user.id) return NextResponse.json({ error: "Only the acquiring buyer can initiate payment." }, { status: 403 });
+
   const existing = await prisma.auditLog.findFirst({
     where: { entityType: "Contract", entityId: contract.id, action: "PAYMENT_INITIALIZED" },
     orderBy: { createdAt: "desc" },
@@ -27,12 +28,14 @@ export async function POST(_request: Request, { params }: { params: { id: string
   if (contract.status === "PAYMENT_PENDING" && previous?.authorizationUrl) {
     return NextResponse.json({ authorizationUrl: previous.authorizationUrl, reference: previous.reference });
   }
-  if (contract.status !== "SIGNED" || !contract.signedAt) return NextResponse.json({ error: "Payment can only begin after the agreement has been signed by all required parties." }, { status: 409 });
+  if (contract.status !== "SIGNED" || !contract.signedAt) {
+    return NextResponse.json({ error: "Payment can only begin after the agreement has been signed by all required parties." }, { status: 409 });
+  }
+
   const amount = contract.offer.amountMinor;
   if (!amount || amount <= 0) return NextResponse.json({ error: "The accepted offer has no valid payment amount." }, { status: 400 });
   const currency = contract.offer.currency.toUpperCase();
   if (!/^[A-Z]{3}$/.test(currency)) return NextResponse.json({ error: "The contract currency is invalid." }, { status: 400 });
-
 
   const reference = "squadrec_" + contract.id + "_" + randomUUID().replaceAll("-", "");
   const response = await fetch("https://api.paystack.co/transaction/initialize", {
@@ -52,15 +55,33 @@ export async function POST(_request: Request, { params }: { params: { id: string
   if (!response.ok || !result.status || !result.data?.authorization_url) {
     return NextResponse.json({ error: result.message || "Paystack could not initialize this payment." }, { status: 502 });
   }
-  await prisma.contract.update({ where: { id: contract.id }, data: { status: "PAYMENT_PENDING" } });
-  await prisma.auditLog.create({
-    data: {
-      actorId: session.user.id,
-      action: "PAYMENT_INITIALIZED",
-      entityType: "Contract",
-      entityId: contract.id,
-      metadata: { reference, authorizationUrl: result.data.authorization_url, amount, currency },
-    },
+
+  // Claim the signed contract atomically so concurrent requests cannot create
+  // multiple active payment references for the same contract.
+  const initialized = await prisma.$transaction(async (tx) => {
+    const claimed = await tx.contract.updateMany({
+      where: { id: contract.id, status: "SIGNED", signedAt: { not: null } },
+      data: { status: "PAYMENT_PENDING" },
+    });
+    if (claimed.count !== 1) return false;
+
+    await tx.auditLog.create({
+      data: {
+        actorId: session.user.id,
+        action: "PAYMENT_INITIALIZED",
+        entityType: "Contract",
+        entityId: contract.id,
+        metadata: { reference, authorizationUrl: result.data.authorization_url, amount, currency },
+      },
+    });
+    return true;
   });
+
+  if (!initialized) {
+    return NextResponse.json({
+      error: "Another payment attempt has already started. Refresh the contract to continue with its active payment.",
+    }, { status: 409 });
+  }
+
   return NextResponse.json({ authorizationUrl: result.data.authorization_url, reference });
 }
