@@ -8,7 +8,7 @@ const schema = z.object({
   name: z.string().trim().min(2).max(80),
   email: z.string().trim().email().max(254),
   password: z.string().min(10).max(72),
-  role: z.enum(["ARTIST", "RIGHTS_HOLDER", "LABEL_PUBLISHER"]),
+  accountType: z.enum(["ARTIST", "RIGHTS_HOLDER", "LABEL_PUBLISHER"]),
 });
 const sha256 = (value: string) => createHash("sha256").update(value).digest("hex");
 
@@ -53,7 +53,8 @@ export async function POST(request: Request) {
         name: parsed.data.name,
         email,
         passwordHash,
-        role: parsed.data.role,
+        role: "LISTENER",
+        accountType: parsed.data.accountType,
         emailVerificationToken: {
           create: { tokenHash: sha256(rawToken), expiresAt: new Date(Date.now() + 30 * 60 * 1000) },
         },
