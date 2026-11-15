@@ -100,7 +100,8 @@ model User {
   rightsRecordsReceived RightsRecord[] @relation("RightsGrantee")
   rightsRecordsRecorded RightsRecord[] @relation("RightsRecorder")
   auditEvents        AuditLog[]           @relation("AuditActor")
-  emailVerificationToken EmailVerificationToken?\n  passwordResetToken PasswordResetToken?
+  emailVerificationToken EmailVerificationToken?
+  passwordResetToken PasswordResetToken?
 }
 
 model Account {
@@ -135,7 +136,17 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model PasswordResetToken {\n  id        String   @id @default(cuid())\n  userId    String\n  tokenHash String   @unique\n  expiresAt DateTime\n  createdAt DateTime @default(now())\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n  @@index([expiresAt])\n}\n\nmodel EmailVerificationToken {
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([expiresAt])
+}
+
+model EmailVerificationToken {
   id        String   @id @default(cuid())
   userId    String   @unique
   tokenHash String   @unique
