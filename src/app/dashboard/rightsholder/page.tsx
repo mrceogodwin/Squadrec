@@ -1,3 +1,4 @@
+import "../artist/artist-overview.css";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
