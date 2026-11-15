@@ -30,7 +30,7 @@ export default async function RightsholderWorkspace(){
  return <main className="artist-dashboard sq-artist-home sq-rights-home">
   <header className="artist-top sq-artist-top">
    <Link href="/dashboard" className="artist-back"><ArrowLeft size={16}/> Account</Link>
-   <Link href="/dashboard/rightsholder" className="artist-top-brand"><span className="brand-symbol">SR</span> SQUADREC <span>RIGHTSHOLDER DESK</span></Link>
+   <Link href="/dashboard/rightsholder" className="artist-top-brand"><img className="sq-brand-mark" src="/squadrec-purple-mark.svg" alt="" /> SQUADREC <span>RIGHTSHOLDER DESK</span></Link>
    <Link href="/dashboard/notifications" className="sq-artist-bell" aria-label="Notifications"><Sparkles size={17}/></Link>
   </header>
   <div className="artist-wrap sq-rights-wrap">
