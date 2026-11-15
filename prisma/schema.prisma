@@ -16,6 +16,13 @@ enum UserRole {
   SUPER_ADMIN
 }
 
+enum AccountType {
+  LISTENER
+  ARTIST
+  RIGHTS_HOLDER
+  LABEL_PUBLISHER
+}
+
 enum VerificationStatus {
   NOT_SUBMITTED
   PENDING
@@ -77,6 +84,7 @@ model User {
   image              String?
   passwordHash       String?
   role               UserRole             @default(LISTENER)
+  accountType        AccountType          @default(LISTENER)
   verificationStatus VerificationStatus   @default(NOT_SUBMITTED)
   isActive           Boolean              @default(true)
   createdAt          DateTime             @default(now())
@@ -92,6 +100,8 @@ model User {
   rightsRecordsReceived RightsRecord[] @relation("RightsGrantee")
   rightsRecordsRecorded RightsRecord[] @relation("RightsRecorder")
   auditEvents        AuditLog[]           @relation("AuditActor")
+  emailVerificationToken EmailVerificationToken?
+  passwordResetToken PasswordResetToken?
 }
 
 model Account {
@@ -124,6 +134,26 @@ model VerificationToken {
   token      String   @unique
   expires    DateTime
   @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([expiresAt])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([expiresAt])
 }
 
 model ArtistProfile {

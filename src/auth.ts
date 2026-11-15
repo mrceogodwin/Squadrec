@@ -26,7 +26,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!parsed.success) return null;
         const email = parsed.data.email.toLowerCase();
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user || !user.passwordHash || !user.isActive) return null;
+        if (!user || !user.passwordHash || !user.isActive || !user.emailVerified) return null;
         const valid = await compare(parsed.data.password, user.passwordHash);
         if (!valid) return null;
         return { id: user.id, name: user.name, email: user.email, role: user.role };
@@ -39,9 +39,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.sub) {
         const current = await prisma.user.findUnique({
           where: { id: token.sub },
-          select: { role: true, isActive: true },
+          select: { role: true, isActive: true, emailVerified: true },
         });
-        if (!current?.isActive) return { ...token, sub: undefined };
+        if (!current?.isActive || !current.emailVerified) return { ...token, sub: undefined };
         token.role = current.role;
       }
       return token;
