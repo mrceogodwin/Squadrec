@@ -7,6 +7,7 @@ CREATE TABLE "PasswordResetToken" (
     CONSTRAINT "PasswordResetToken_pkey" PRIMARY KEY ("id")
 );
 
+CREATE UNIQUE INDEX "PasswordResetToken_userId_key" ON "PasswordResetToken"("userId");
 CREATE UNIQUE INDEX "PasswordResetToken_tokenHash_key" ON "PasswordResetToken"("tokenHash");
 CREATE INDEX "PasswordResetToken_expiresAt_idx" ON "PasswordResetToken"("expiresAt");
 
