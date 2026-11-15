@@ -9,7 +9,7 @@ export default function VerifyEmailPage(){
  useEffect(()=>{const params=new URLSearchParams(window.location.search);setEmail(params.get("email")||"");setStatus(params.get("status")||"sent");},[]);
  async function resend(){if(!email){setMessage("Enter the email address you used to register.");return;}setBusy(true);setMessage("");try{const r=await fetch("/api/verify-email/resend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Unable to resend the link.");setMessage(d.message||"If this address has an unverified account, a fresh link will be sent.");}catch(e){setMessage(e instanceof Error?e.message:"Unable to resend the link.");}finally{setBusy(false);}}
  const verified=status==="success";
- return <main className={styles.page}><Link href="/onboarding" className={styles.brand}><img src="/squadrec-purple-mark.svg" alt="" /> <span>SQUADREC<sup>®</sup></span></Link><section className={styles.card}>
+ return <main className={styles.page}><Link href="/onboarding" className={styles.brand}><img src="/squadrec-mark.svg" alt="" /> <span>SQUADREC<sup>®</sup></span></Link><section className={styles.card}>
   <div className={verified?styles.successIcon:styles.icon}>{verified?<CheckCircle2 size={35}/>:<Mail size={35}/>}</div>
   <span className={styles.step}>ACCOUNT SECURITY</span>
   <h1>{verified?"Email verified!":status==="expired"?"Your link has expired":"Verify your email."}</h1>
