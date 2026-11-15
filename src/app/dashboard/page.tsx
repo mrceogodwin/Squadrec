@@ -46,7 +46,7 @@ export default async function AccountDashboard() {
       { href: "/dashboard/rights", title: "Rights ownership register", description: "View completed rights transactions", icon: ScrollText },
     ] : []),
     ...(accountType === "RIGHTS_HOLDER" ? [
-      { href: "/dashboard/rights", title: "Rights ownership register", description: "Review recorded rights and completed transfers", icon: ScrollText },
+      { href: "/dashboard/rightsholder", title: "Rightsholder Workspace", description: "Manage your rights portfolio, agreements and ownership activity", icon: ScrollText },
       { href: "/dashboard/contracts", title: "Contract register", description: "Track agreements involving your music rights", icon: FileSignature },
     ] : []),
     ...(accountType === "LABEL_PUBLISHER" ? [
