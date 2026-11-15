@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
     finally{setBusy(false);}
   }
   return <main className={styles.page}>
-    <Link href="/" className={styles.brand}><img src="/squadrec-purple-mark.svg" alt=""/><span>SQUADREC<sup>®</sup></span></Link>
+    <Link href="/" className={styles.brand}><img src="/squadrec-mark.svg" alt=""/><span>SQUADREC<sup>®</sup></span></Link>
     <section className={styles.card}>
       <div className={styles.icon}><ShieldCheck size={27}/></div>
       <span className={styles.eyebrow}>SECURE ACCOUNT ACCESS</span>
