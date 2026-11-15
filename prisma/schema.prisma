@@ -10,6 +10,8 @@ datasource db {
 enum UserRole {
   LISTENER
   ARTIST
+  RIGHTS_HOLDER
+  LABEL_PUBLISHER
   AUTHORISED_UPLOADER
   INDUSTRY_BUYER
   ADMIN
@@ -92,6 +94,7 @@ model User {
   rightsRecordsReceived RightsRecord[] @relation("RightsGrantee")
   rightsRecordsRecorded RightsRecord[] @relation("RightsRecorder")
   auditEvents        AuditLog[]           @relation("AuditActor")
+  emailVerificationToken EmailVerificationToken?
 }
 
 model Account {
@@ -124,6 +127,16 @@ model VerificationToken {
   token      String   @unique
   expires    DateTime
   @@unique([identifier, token])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([expiresAt])
 }
 
 model ArtistProfile {
