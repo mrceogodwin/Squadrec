@@ -274,3 +274,59 @@ html{scroll-padding-top:90px}body{background:var(--app-bg)}button{transition:tra
 .auth-forgot{text-align:right;margin-top:-8px}
 .auth-forgot a{color:#7414bd;font-size:10px;font-weight:700;text-decoration:none}
 @media(max-width:500px){.auth-brand{top:20px;left:50%;}.auth-card{padding:27px 22px}.auth-card h1{font-size:35px}}
+
+
+/* FINAL AUTH OVERRIDE — match the approved green SQUADREC homepage */
+.auth-screen{
+  min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  gap:0;padding:30px 18px 42px;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% -12%,rgba(0,133,55,.11),transparent 43%),linear-gradient(180deg,#f8fcf9 0%,#eef5f0 100%);
+  color:#18231b;
+}
+.auth-glow{position:absolute;top:-310px;left:50%;width:780px;height:560px;transform:translateX(-50%);border:1px solid rgba(0,130,54,.10);border-radius:50%;box-shadow:0 0 0 48px rgba(0,130,54,.025),0 0 0 96px rgba(0,130,54,.018);pointer-events:none}
+.auth-brand{
+  position:relative;top:auto;left:auto;transform:none;z-index:1;align-self:flex-start;
+  display:flex;align-items:center;gap:13px;margin:8px auto 42px;
+  color:#151b17;font-size:17px;font-weight:800;letter-spacing:.18em;white-space:nowrap
+}
+.auth-brand img{display:block;width:48px;height:48px;object-fit:contain}
+.auth-brand sup{font-size:8px;letter-spacing:0;vertical-align:top;margin-left:2px;color:#151b17}
+.auth-card{
+  position:relative;z-index:1;width:min(100%,560px);margin:0 auto;padding:clamp(28px,6vw,48px);
+  border:1px solid #dce8df;border-radius:28px;background:#fff;
+  box-shadow:0 20px 60px rgba(28,68,39,.08);color:#18231b
+}
+.auth-icon{width:64px;height:64px;display:grid;place-items:center;margin:0 0 27px;border:1px solid #cce5d2;border-radius:19px;background:#edf7ef;color:#008c3b}
+.auth-card>.eyebrow{color:#008b3a;font-size:10px;font-weight:800;letter-spacing:.2em}
+.auth-card h1{margin:16px 0 17px;color:#18231b;font-size:clamp(40px,8vw,56px);line-height:1.02;letter-spacing:-.065em;font-weight:650}
+.auth-card h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;color:#008c3b}
+.auth-card>p{margin:0 0 32px;color:#758078;font-size:14px;line-height:1.7}
+.auth-card form{display:grid;gap:19px}
+.auth-card label{display:grid;gap:9px;color:#3d4a40;font-size:12px;font-weight:650}
+.auth-card input{width:100%;min-height:58px;padding:16px;border:1px solid #dce7de;border-radius:15px;background:#fbfdfb;color:#18231b;font-size:14px;outline:none}
+.auth-card input::placeholder{color:#a0aaa2}
+.auth-card input:focus{border-color:#15964b;box-shadow:0 0 0 4px rgba(0,140,59,.09)}
+.auth-forgot{margin-top:-7px;text-align:right}
+.auth-forgot a{color:#008b3a;font-size:12px;font-weight:700}
+.auth-card .auth-submit,.auth-card .primary-action{
+  width:100%;min-height:60px;margin-top:7px;border:0;border-radius:15px;
+  background:#07933e;color:#fff;font-size:15px;font-weight:800;
+  box-shadow:0 12px 28px rgba(0,133,55,.15)
+}
+.auth-card .auth-submit:hover{background:#067f36;box-shadow:0 14px 30px rgba(0,133,55,.2)}
+.auth-switch{margin-top:26px;color:#7b877e;font-size:12px;text-align:center}
+.auth-switch a{margin-left:8px;color:#008b3a;font-weight:800}
+.auth-safe{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:27px;padding-top:22px;border-top:1px solid #e2ebe4;color:#829087;font-size:11px}
+.auth-safe svg{color:#008b3a}
+.auth-back{position:relative;z-index:1;margin:34px auto 0;color:#718078;font-size:12px}
+.auth-back:hover{color:#008b3a}
+.auth-error{border:1px solid #f0cccc;border-radius:12px;background:#fff6f6;color:#a43b3b;padding:12px;font-size:11px}
+@media(max-width:520px){
+ .auth-screen{padding:24px 16px 34px}
+ .auth-brand{margin:7px auto 30px;gap:10px;font-size:15px}
+ .auth-brand img{width:42px;height:42px}
+ .auth-card{padding:29px 23px;border-radius:24px}
+ .auth-card h1{font-size:clamp(38px,10vw,48px)}
+ .auth-card>p{font-size:13px;margin-bottom:27px}
+ .auth-card input{min-height:56px}
+}
