@@ -19,7 +19,7 @@ export default function RegisterPage(){
   if(!accepted){setError("Please agree to the Terms of Service and Privacy Policy.");return;}
   setLoading(true);
   try{
-   const response=await fetch("/api/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,password,role})});
+   const response=await fetch("/api/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,password,accountType:role})});
    const data=await response.json();if(!response.ok)throw new Error(data.error||"Registration failed.");
    window.location.href="/verify-email?email="+encodeURIComponent(data.email);
   }catch(e){setError(e instanceof Error?e.message:"Something went wrong. Please try again.");setLoading(false);}
