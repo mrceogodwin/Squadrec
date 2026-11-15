@@ -4,13 +4,7 @@ import Link from "next/link";
 import { ArrowRight, AudioLines, ChevronRight, Menu, Music2, ShieldCheck, Layers3 } from "lucide-react";
 import styles from "./onboarding.module.css";
 
-function BrandMark() {
-  return <svg viewBox="0 0 42 34" aria-hidden="true" className={styles.mark}>
-    <defs><linearGradient id="squadrec-purple" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#9B35E8"/><stop offset="1" stopColor="#5100A8"/></linearGradient></defs>
-    <path d="M2 3.5c0-2 2.2-3.1 3.8-2l14.4 10.1a6.4 6.4 0 0 1 0 10.5L5.8 32.2C4.2 33.3 2 32.2 2 30.2z" fill="url(#squadrec-purple)"/>
-    <path d="M19 3.5c0-2 2.2-3.1 3.8-2l14.4 10.1a6.4 6.4 0 0 1 0 10.5L22.8 32.2c-1.6 1.1-3.8 0-3.8-2z" fill="#7416C6" opacity=".9"/>
-  </svg>;
-}
+function BrandMark() {\n  return <img src="/squadrec-purple-mark.svg" alt="" aria-hidden="true" className={styles.mark} />;\n}
 
 const services = [
   { icon: Music2, title: "Release & distribute", copy: "Get your music ready for a wider audience." },
