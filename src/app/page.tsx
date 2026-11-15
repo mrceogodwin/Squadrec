@@ -68,23 +68,32 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="sq-hero">
+      <section className="sq-hero sq-hero-creem">
         <div className="sq-hero-copy">
-          <div className="sq-overline">MUSIC <i/> RIGHTS <i/> OWNERSHIP</div>
-          <h1>Discover Music.<br/>Acquire <span>Ownership.</span></h1>
-          <p>Stream, buy, and own music. Discover unreleased tracks, connect with artists, and acquire exclusive music rights directly on SQUADREC.</p>
-          <div className="sq-hero-actions"><a className="sq-button sq-button-green" href="#trending"><Play size={15} fill="currentColor"/> Explore Music</a><a className="sq-button sq-button-outline" href="#vault"><Gem size={18}/> Enter Exclusive Vault</a></div>
-          <div className="sq-social-proof"><div className="sq-mini-avatars"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80"/><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80"/><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80"/></div><b>50K+</b><span>Join music lovers, artists<br/>and industry buyers.</span></div>
+          <div className="sq-overline sq-overline-pill"><span className="sq-wave">▮▮▮</span> MUSIC RIGHTS PLATFORM</div>
+          <h1>Make music.<br/><span>Own the rights.</span></h1>
+          <p>Release music, discover exclusive catalogues, and manage ownership from one place.</p>
+          <div className="sq-hero-actions"><a className="sq-button sq-button-peach" href="/register">Get started <ArrowRight size={19}/></a><a className="sq-button sq-button-outline" href="#platform">Explore platform</a></div>
+          <div className="sq-hero-orbit" aria-hidden="true"/>
         </div>
-        <div className="sq-hero-art">
-          <div className="sq-green-ribbon"/>
-          <img className="sq-hero-person" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1100&auto=format&fit=crop&q=90" alt="Artist wearing sunglasses"/>
-          <div className="sq-floating-player">{tracks[0] ? <><Cover src={tracks[0].art} title={tracks[0].title}/><div className="sq-float-track"><b>{tracks[0].title}</b><span>{tracks[0].artist}</span></div><button onClick={() => tracks[0] && togglePlay(tracks[0].id)} aria-label="Play track">{playing===tracks[0]?.id?<Pause size={17} fill="currentColor"/>:<Play size={17} fill="currentColor"/>}</button></> : <div className="sq-float-track"><b>Discover the next sound.</b><span>New approved releases will appear here.</span></div>}</div>
-          <img className="sq-hero-stamp" src="/squadrec-mark.svg" alt="" />
+        <div className="sq-product-stage">
+          <div className="sq-dashboard-preview">
+            <div className="sq-preview-top"><span><img src="/squadrec-mark.svg" alt=""/> SQUADREC</span><span>⌕　♧　●</span></div>
+            <p className="sq-preview-welcome">Welcome back, Femi 👋</p>
+            <div className="sq-preview-stats"><div><small>♫ Releases</small><b>24</b><em>↑ +20%</em></div><div><small>◇ Deals</small><b>06</b><em>↑ +50%</em></div><div><small>♢ Rights</small><b>12</b><em>↑ +33%</em></div></div>
+            <div className="sq-preview-list-head"><b>Recent releases</b><span>View all →</span></div>
+            <div className="sq-preview-track"><i className="art-a"/> <span><b>Higher Ground</b><small>Single · 3.2M streams</small></span><button>▶</button></div>
+            <div className="sq-preview-track"><i className="art-b"/> <span><b>No Delay</b><small>EP · 1.1M streams</small></span><button>▶</button></div>
+            <div className="sq-preview-track"><i className="art-c"/> <span><b>Edo Vibes</b><small>Album · 5.8M streams</small></span><button>▶</button></div>
+            <div className="sq-preview-nav"><span>⌂<small>Overview</small></span><span>♫<small>Music</small></span><span>◇<small>Deals</small></span><span>♢<small>Rights</small></span><span>•••<small>More</small></span></div>
+          </div>
         </div>
       </section>
-
-      <section className="sq-shortcuts">{shortcuts.map(item => {const Icon=item.icon;return <a className="sq-shortcut" href={item.href} key={item.title}><span className="sq-shortcut-icon"><Icon size={27}/></span><span className="sq-shortcut-copy"><b>{item.title}</b><small>{item.text}</small></span><ArrowRight size={19}/></a>;})}</section>
+      <section className="sq-shortcuts sq-feature-band" id="platform">
+        <a className="sq-shortcut" href="/dashboard/artist"><span className="sq-shortcut-icon"><Music2 size={27}/></span><span className="sq-shortcut-copy"><b>Release &amp; Distribute</b><small>Get your music to global audiences.</small></span><ArrowRight size={19}/></a>
+        <a className="sq-shortcut" href="/dashboard/industry"><span className="sq-shortcut-icon"><Gem size={27}/></span><span className="sq-shortcut-copy"><b>Acquire Music Rights</b><small>Buy, license and own exclusive catalogues.</small></span><ArrowRight size={19}/></a>
+        <a className="sq-shortcut" href="/dashboard/contracts"><span className="sq-shortcut-icon"><ShieldCheck size={27}/></span><span className="sq-shortcut-copy"><b>Manage Ownership</b><small>Track rights, contracts and revenue in one place.</small></span><ArrowRight size={19}/></a>
+      </section>
 
       <section className="sq-section" id="trending">
         <div className="sq-section-head"><div><h2>Trending Now</h2><p>The sounds making their mark right now.</p></div><div className="sq-genres">{["All","Afrobeats","Hip-Hop","R&B","Amapiano","Afropop","Alternative"].map(g=><button key={g} className={activeGenre===g?"selected":""} onClick={()=>setActiveGenre(g)}>{g}</button>)}</div><a className="sq-view-all" href="#store">View All <ArrowRight size={16}/></a></div>
