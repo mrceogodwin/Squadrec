@@ -1,11 +1,12 @@
+import "./artist-overview.css";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import {
   ArrowRight, AudioLines, BadgeCheck, Bell, CheckCircle2, Clock3,
-  Disc3, FileAudio, FileCheck2, Headphones, LockKeyhole, Music2,
-  Plus, ShieldCheck, ShoppingBag, Sparkles, UploadCloud
+  Disc3, FileAudio, FileCheck2, LockKeyhole,
+  Plus, ShieldCheck, ShoppingBag, Sparkles
 } from "lucide-react";
 import ArtistApplicationForm from "./artist-application-form";
 import ReplaceExclusivePreview from "./replace-exclusive-preview";
